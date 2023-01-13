@@ -32,6 +32,8 @@ int main( int argc, char** argv ) {
         }
     }
 
+    bmp.changed_image = rotate(bmp.source_image);
+
     switch (to_bmp(fopen(argv[2], "wb"), &bmp.changed_image)) {
         case WRITE_OK: {
             printf("File \"%s\" has been written well.", argv[2]);
