@@ -35,8 +35,20 @@ enum  write_status  {
     WRITE_ERROR = -6
 };
 
+struct image {
+    uint64_t width, height;
+    struct pixel* data;
+};
+
+
 struct BMP {
     struct bmp_header header;
-    uint64_t width_of_image, height_of_image;
-    struct pixel* image_essence;
+    struct image source_image;
+    struct image changed_image;
 };
+
+enum read_status from_bmp( FILE* in, struct image* img );
+
+enum write_status to_bmp( FILE* out, struct image const* img );
+
+struct image rotate( struct image const source );
