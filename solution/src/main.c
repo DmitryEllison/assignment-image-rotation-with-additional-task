@@ -10,9 +10,9 @@ int main( int argc, char** argv ) {
 
     struct BMP bmp = {0};
 
-    switch (from_bmp(fopen(argv[1], "rb"), &bmp.source_image)) {
+    switch (from_bmp(fopen(argv[1], "rb"), &bmp)) {
         case READ_OK: {
-            printf("File \"%s\" has been read well.", argv[1]);
+            printf("\nFile \"%s\" has been read well.", argv[1]);
             break;
         }
         case READ_INVALID_BITS: {
@@ -20,7 +20,7 @@ int main( int argc, char** argv ) {
             break;
         }
         case READ_INVALID_HEADER: {
-            printf("Invalid header.");
+            printf("Invalid source header.");
             break;
         }
         case READ_INVALID_SIGNATURE:{
@@ -32,11 +32,13 @@ int main( int argc, char** argv ) {
         }
     }
 
-    bmp.changed_image = rotate(bmp.source_image);
+    delete_padding_and_fill_image(bmp);
+    rotate(bmp);
+    add_padding_and_fill_buffer(bmp);
 
-    switch (to_bmp(fopen(argv[2], "wb"), &bmp.changed_image)) {
+    switch (to_bmp(fopen(argv[2], "wb"), &bmp)) {
         case WRITE_OK: {
-            printf("File \"%s\" has been written well.", argv[2]);
+            printf("\nFile \"%s\" has been written well.", argv[2]);
             break;
         }
         default: {
