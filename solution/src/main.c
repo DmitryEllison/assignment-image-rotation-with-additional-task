@@ -1,7 +1,8 @@
 #include "utilities/source.h"
 
+
 int main( int argc, char** argv ) {
-    (void) argc; (void) argv; // supress 'unused parameters' warning
+    (void) argc; (void) argv;
 
     if (argc != 3) {
         printf("Invalid counts of arguments.\n You inputted %d.", argc);
@@ -10,41 +11,22 @@ int main( int argc, char** argv ) {
 
     struct BMP bmp = {0};
 
-    switch (from_bmp(fopen(argv[1], "rb"), &bmp)) {
-        case READ_OK: {
-            printf("\nFile \"%s\" has been read well.", argv[1]);
-            break;
-        }
-        case READ_INVALID_BITS: {
-            printf("Invalid bits.");
-            break;
-        }
-        case READ_INVALID_HEADER: {
-            printf("Invalid source header.");
-            break;
-        }
-        case READ_INVALID_SIGNATURE:{
-            printf("Invalid signature.");
-            break;
-        }
-        default: {
-            printf("Something went wrong with reading of file \"%s\"", argv[1]);
-        }
-    }
+    // read
+    enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
+    read_status_print(rs);
 
-    delete_padding_and_fill_image(bmp);
-    rotate(bmp);
-    add_padding_and_fill_buffer(bmp);
+    show_header(bmp.header);
+    // change
+    buffer2image(bmp);
+    rotate(bmp.image);
+    update_header_and_padding(bmp);
+    image2buffer(bmp);
 
-    switch (to_bmp(fopen(argv[2], "wb"), &bmp)) {
-        case WRITE_OK: {
-            printf("\nFile \"%s\" has been written well.", argv[2]);
-            break;
-        }
-        default: {
-            printf("Something went wrong with writing changed image in the file \"%s\"", argv[2]);
-        }
-    }
+    show_header(bmp.header);
+    // write
+    enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
+    write_status_print(ws);
 
     return 0;
 }
+

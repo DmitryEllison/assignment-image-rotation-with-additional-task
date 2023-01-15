@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+
 struct __attribute__((packed)) bmp_header {
     uint16_t bfType;
     uint32_t bfileSize; // размер файла
@@ -33,7 +34,8 @@ enum read_status  {
 
 enum  write_status  {
     WRITE_OK = 0,
-    WRITE_ERROR = -666
+    WRITE_HEADER_ERROR = -666,
+    WRITE_BUFFER_ERROR = -999
 };
 
 struct image {
@@ -53,12 +55,18 @@ enum read_status from_bmp( FILE* in, struct BMP* img );
 
 enum write_status to_bmp( FILE* out, struct BMP const* img );
 
-void rotate( struct BMP bmp);
+void rotate( struct image* img);
 
 void show_header(struct bmp_header header);
 
 int32_t get_padding(int32_t biWidth);
 
-void delete_padding_and_fill_image(struct BMP bmp);
+void buffer2image(struct BMP bmp);
 
-void add_padding_and_fill_buffer(struct BMP bmp);
+void image2buffer(struct BMP bmp);
+
+void read_status_print(enum read_status rs);
+
+void write_status_print(enum write_status ws);
+
+void update_header_and_padding(struct BMP bmp);
