@@ -61,14 +61,14 @@ void show_header(struct bmp_header header);
 
 int32_t get_padding(int32_t biWidth);
 
-void buffer2image(struct BMP bmp);
+void buffer2image(struct BMP* bmp);
 
-void image2buffer(struct BMP bmp);
+void image2buffer(struct BMP* bmp);
 
 void read_status_print(enum read_status rs);
 
 void write_status_print(enum write_status ws);
 
-void update_header_and_padding(struct BMP bmp);
+void update_header_and_padding(struct BMP* bmp);
 
 struct BMP null_bmp();
