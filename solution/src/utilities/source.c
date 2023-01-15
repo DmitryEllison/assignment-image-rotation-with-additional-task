@@ -45,12 +45,14 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
 }
 
 enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
-    if (fwrite(&bmp->header, sizeof(struct bmp_header), 1, out) != 0) {
-        free(bmp->image);
+
+    if (fwrite(&bmp->header, sizeof(struct bmp_header), 1, out) != 1) {
+        free(bmp->image.data);
         return WRITE_HEADER_ERROR;
     }
+
     if (fwrite(bmp->buffer, bmp->header.biSizeImage, 1, out) == 0) {
-        free(bmp->image);
+        free(bmp->image.data);
         return WRITE_BUFFER_ERROR;
     }
 
@@ -59,16 +61,21 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
     return WRITE_OK;
 }
 
-void rotate( struct image* img ) {
-    int64_t width = img->width;
-    int64_t height = img->height;
+struct image rotate(struct image const img) {
+    int64_t width = img.width;
+    int64_t height = img.height;
     struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
     for (uint64_t i = 0; i < height; i++) {
         for (uint64_t j = 0; j < width; j++) {
-            temp[j*height + (height - (i + 1)) ] = img->data[j + i * width];
+            temp[j*height + (height - (i + 1)) ] = img.data[j + i * width];
         }
     }
-    img->data = temp;
+    return (struct image)
+            {
+                    .width = height,
+                    .height = width,
+                    .data = temp
+            };
 }
 
 void buffer2image(struct BMP* bmp) {
@@ -84,27 +91,27 @@ void buffer2image(struct BMP* bmp) {
         }
         i += bmp->padding;
     }
-    bmp->image->width = bmp->header.biWidth;
-    bmp->image->height = bmp->header.biHeight;
-    bmp->image->data = temp;
+    bmp->image.width = bmp->header.biWidth;
+    bmp->image.height = bmp->header.biHeight;
+    bmp->image.data = temp;
     free(bmp->buffer);
     bmp->padding = 0;
 }
 
 void update_header_and_padding(struct BMP* bmp) {
-    bmp->padding = get_padding(bmp->image->width);
-    bmp->header.biWidth = bmp->image->width;
-    bmp->header.biHeight = bmp->image->height;
+    bmp->padding = get_padding(bmp->image.width);
+    bmp->header.biWidth = bmp->image.width;
+    bmp->header.biHeight = bmp->image.height;
     bmp->header.biSizeImage = (sizeof(struct pixel) * bmp->header.biWidth + bmp->padding ) * bmp->header.biHeight;
 }
 
 void image2buffer(struct BMP* bmp) {
     bmp->buffer = malloc(bmp->header.biSizeImage);
-    for (size_t i = 0; i < bmp->image->height; ++i) {
-        for (size_t j = 0; j < bmp->image->width; ++j) {
-            bmp->buffer[i * bmp->image->height + 3 * j] = bmp->image->data->b;
-            bmp->buffer[i * bmp->image->height + 3 * j + 1] = bmp->image->data->g;
-            bmp->buffer[i * bmp->image->height + 3 * j + 2] = bmp->image->data->r;
+    for (size_t i = 0; i < bmp->image.height; ++i) {
+        for (size_t j = 0; j < bmp->image.width; ++j) {
+            bmp->buffer[i * bmp->image.height + 3 * j] = bmp->image.data->b;
+            bmp->buffer[i * bmp->image.height + 3 * j + 1] = bmp->image.data->g;
+            bmp->buffer[i * bmp->image.height + 3 * j + 2] = bmp->image.data->r;
         }
         i += bmp->padding;
     }

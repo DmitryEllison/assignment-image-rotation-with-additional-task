@@ -17,7 +17,7 @@ int main( int argc, char** argv ) {
 
     // extract pixels from puffer to image
     buffer2image(&bmp);
-    rotate(bmp.image);
+    bmp.image = rotate(bmp.image);
     update_header_and_padding(&bmp);
     // add padding and move pixels to buffer
     image2buffer(&bmp);
