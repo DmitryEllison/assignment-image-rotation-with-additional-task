@@ -9,17 +9,19 @@ int main( int argc, char** argv ) {
         return -2;
     }
 
-    struct BMP bmp = {0};
+    struct BMP bmp = null_bmp();
 
-    // read
+    // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
     read_status_print(rs);
 
-    show_header(bmp.header);
-    // change
+    // extract pixels from puffer to image
     buffer2image(bmp);
+    // rotate image
     rotate(bmp.image);
+    // update header and padding
     update_header_and_padding(bmp);
+    // add padding and move pixels to buffer
     image2buffer(bmp);
 
     show_header(bmp.header);

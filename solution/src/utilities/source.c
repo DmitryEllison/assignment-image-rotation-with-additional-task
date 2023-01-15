@@ -18,7 +18,6 @@ void show_header(struct bmp_header header) {
 }
 
 enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
-
     // Считали хедер
     if (fread(&(bmp->header), sizeof(struct bmp_header), 1, in) != 1) {
         return READ_INVALID_HEADER;
@@ -41,7 +40,6 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
         return READ_INVALID_BITS;
     }
 
-    bmp->image = (struct image*) {0};
     bmp->image->width = bmp->header.biWidth;
     bmp->image->height = bmp->header.biHeight;
 
@@ -155,3 +153,17 @@ void read_status_print(enum read_status rs) {
         }
     }
 }
+
+struct BMP null_bmp() {
+    return (struct BMP) {
+            .image = &(struct image) {
+                    .height = 0,
+                    .width = 0,
+                    .data = NULL
+            },
+            .header = NULL,
+            .buffer = NULL,
+            .padding = 0
+    };
+}
+

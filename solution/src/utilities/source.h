@@ -5,7 +5,7 @@
 
 struct __attribute__((packed)) bmp_header {
     uint16_t bfType;
-    uint32_t bfileSize; // размер файла
+    uint32_t bfileSize; // header + buffer
     uint32_t bfReserved;
     uint32_t bOffBits;
     uint32_t biSize; // 40
@@ -14,7 +14,7 @@ struct __attribute__((packed)) bmp_header {
     uint16_t biPlanes;
     uint16_t biBitCount;
     uint32_t biCompression;
-    uint32_t biSizeImage; // в байтах
+    uint32_t biSizeImage; // buffer in bytes
     uint32_t biXPelsPerMeter;
     uint32_t biYPelsPerMeter;
     uint32_t biClrUsed;
@@ -70,3 +70,5 @@ void read_status_print(enum read_status rs);
 void write_status_print(enum write_status ws);
 
 void update_header_and_padding(struct BMP bmp);
+
+struct BMP null_bmp();
