@@ -56,7 +56,7 @@ struct image rotate(struct image const img) {
     struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
     for (uint64_t i = 0; i < height; i++) {
         for (uint64_t j = 0; j < width; j++) {
-            temp[j*height + (height - (i + 1)) ] = img.data[j + i * width];
+            temp[j*height + height - (i + 1) ] = img.data[j + i * width];
         }
     }
     return (struct image)
@@ -72,7 +72,7 @@ void buffer2image(struct BMP* bmp) {
     for (size_t i = 0; i < bmp->header.biHeight; ++i) {
         for (size_t j = 0; j < bmp->header.biWidth; ++j) {
             size_t index = 3 * (bmp->header.biWidth * i + j) + i * bmp->padding;
-            temp[i + j * bmp->header.biWidth] = (struct pixel) {
+            temp[j + i * bmp->header.biWidth] = (struct pixel) {
                 bmp->buffer[index + 0],
                 bmp->buffer[index + 1],
                 bmp->buffer[index + 2]
@@ -96,13 +96,17 @@ void update_header_and_padding(struct BMP* bmp) {
 
 void image2buffer(struct BMP* bmp) {
     bmp->buffer = malloc(bmp->header.biSizeImage);
+    size_t index = 0;
     for (size_t i = 0; i < bmp->image.height; ++i) {
         for (size_t j = 0; j < bmp->image.width; ++j) {
-            bmp->buffer[i * bmp->image.height + 3 * j] = bmp->image.data->b;
-            bmp->buffer[i * bmp->image.height + 3 * j + 1] = bmp->image.data->g;
-            bmp->buffer[i * bmp->image.height + 3 * j + 2] = bmp->image.data->r;
+            index = 3 * (bmp->header.biWidth * i + j) + i * bmp->padding;
+            bmp->buffer[index + 0] = bmp->image.data[j + i * bmp->padding].b;
+            bmp->buffer[index + 1] = bmp->image.data[j + i * bmp->padding].g;
+            bmp->buffer[index + 2] = bmp->image.data[j + i * bmp->padding].r;
         }
-        i += bmp->padding;
+        for (size_t k = index + 3; k < index + bmp->padding; ++k) {
+            bmp->buffer[k] = 0;
+        }
     }
     free(bmp->image.data);
 }
@@ -177,7 +181,7 @@ void show_header(struct bmp_header header) {
 
 void show_image(struct image const img) {
     printf("\n");
-    for (size_t i = 0; i < img.height * img.width; ++i) {
+    for (size_t i = 0; i < img.height * img.width ; ++i) {
         printf("[%" PRIu8 ", %" PRIu8 ", %" PRIu8 "]", img.data[i].b, img.data[i].g, img.data[i].r);
     }
     printf("\n");

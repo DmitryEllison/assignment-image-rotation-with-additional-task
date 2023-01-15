@@ -16,14 +16,17 @@ int main( int argc, char** argv ) {
     read_status_print(rs);
 
     // extract pixels from puffer to image
-    show_buffer(bmp);
+    //show_buffer(bmp);// --------------------------------------------
     buffer2image(&bmp);
 
-    show_image(bmp.image);
-    //bmp.image = rotate(bmp.image);
-    //update_header_and_padding(&bmp);
+    //show_image(bmp.image);
+    bmp.image = rotate(bmp.image);
+    update_header_and_padding(&bmp);
     // add padding and move pixels to buffer
     image2buffer(&bmp);
+
+    //show_buffer(bmp); // --------------------------------------------
+    //show_header(bmp.header);
 
     // write
     enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
