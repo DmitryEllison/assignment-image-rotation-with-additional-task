@@ -59,7 +59,7 @@ struct image rotate( struct image const img );
 
 void show_header(struct bmp_header header);
 
-int32_t get_padding(int32_t biWidth);
+uint32_t get_padding(int32_t biWidth);
 
 void buffer2image(struct BMP* bmp);
 
@@ -72,3 +72,7 @@ void write_status_print(enum write_status ws);
 void update_header_and_padding(struct BMP* bmp);
 
 struct BMP null_bmp();
+
+void show_image(struct image const img);
+
+void show_buffer(struct BMP const bmp);

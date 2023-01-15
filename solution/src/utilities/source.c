@@ -1,20 +1,8 @@
 #include <malloc.h>
 #include "source.h"
 
-
-int32_t get_padding(int32_t biWidth) {
+uint32_t get_padding(int32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
-}
-
-void show_header(struct bmp_header header) {
-    printf("\nHeader: \n");
-    printf("\tbiWidth: %d\n", header.biWidth);
-    printf("\tbiHeight: %d\n", header.biHeight);
-    printf("\tbiSizeImage: %d\n", header.biSizeImage);
-    printf("\tPadding: %d bytes.\n", get_padding(header.biWidth));
-    printf("\tbiSize: %d\n", header.biSize);
-    printf("\tbfType: %d\n", header.bfType);
-    printf("\tbfileSize: %d\n", header.bfileSize);
 }
 
 enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
@@ -35,6 +23,7 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
 
     bmp->buffer = malloc(bmp->header.biSizeImage);
     bmp->padding = get_padding(bmp->header.biWidth);
+
     if (fread(bmp->buffer, bmp->header.biSizeImage, 1, in) != 1) {
         free(bmp->buffer);
         return READ_INVALID_BITS;
@@ -82,14 +71,13 @@ void buffer2image(struct BMP* bmp) {
     struct pixel* temp = malloc(sizeof(struct pixel) * bmp->header.biWidth * bmp->header.biHeight);
     for (size_t i = 0; i < bmp->header.biHeight; ++i) {
         for (size_t j = 0; j < bmp->header.biWidth; ++j) {
-            size_t index = 3 * bmp->header.biWidth * i + 3 * j;
-            temp[i] = (struct pixel) {
+            size_t index = 3 * (bmp->header.biWidth * i + j) + i * bmp->padding;
+            temp[i + j * bmp->header.biWidth] = (struct pixel) {
                 bmp->buffer[index + 0],
                 bmp->buffer[index + 1],
                 bmp->buffer[index + 2]
             };
         }
-        i += bmp->padding;
     }
     bmp->image.width = bmp->header.biWidth;
     bmp->image.height = bmp->header.biHeight;
@@ -100,6 +88,7 @@ void buffer2image(struct BMP* bmp) {
 
 void update_header_and_padding(struct BMP* bmp) {
     bmp->padding = get_padding(bmp->image.width);
+    bmp->header.bfileSize = sizeof(struct bmp_header) + (3 * bmp->image.width + bmp->padding) * bmp->image.height;
     bmp->header.biWidth = bmp->image.width;
     bmp->header.biHeight = bmp->image.height;
     bmp->header.biSizeImage = (sizeof(struct pixel) * bmp->header.biWidth + bmp->padding ) * bmp->header.biHeight;
@@ -115,6 +104,7 @@ void image2buffer(struct BMP* bmp) {
         }
         i += bmp->padding;
     }
+    free(bmp->image.data);
 }
 
 void write_status_print(enum write_status ws) {
@@ -163,7 +153,7 @@ void read_status_print(enum read_status rs) {
 
 struct BMP null_bmp() {
     return (struct BMP) {
-            .image = &(struct image) {
+            .image = (struct image) {
                     .height = 0,
                     .width = 0,
                     .data = NULL
@@ -174,3 +164,30 @@ struct BMP null_bmp() {
     };
 }
 
+void show_header(struct bmp_header header) {
+    printf("\nHeader: \n");
+    printf("\tbiWidth: %d\n", header.biWidth);
+    printf("\tbiHeight: %d\n", header.biHeight);
+    printf("\tbiSizeImage: %d\n", header.biSizeImage);
+    printf("\tPadding: %d bytes.\n", get_padding(header.biWidth));
+    printf("\tbiSize: %d\n", header.biSize);
+    printf("\tbfType: %d\n", header.bfType);
+    printf("\tbfileSize: %d\n", header.bfileSize);
+}
+
+void show_image(struct image const img) {
+    printf("\n");
+    for (size_t i = 0; i < img.height * img.width; ++i) {
+        printf("[%" PRIu8 ", %" PRIu8 ", %" PRIu8 "]", img.data[i].b, img.data[i].g, img.data[i].r);
+    }
+    printf("\n");
+}
+
+
+void show_buffer(struct BMP const bmp) {
+    printf("\n\n");
+    for (size_t i = 0; i < bmp.header.biSizeImage; ++i) {
+        printf("%" PRIu8 " ", bmp.buffer[i]);
+    }
+    printf("\n\n");
+}
