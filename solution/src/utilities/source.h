@@ -58,7 +58,7 @@ enum write_status to_bmp( FILE* out, struct BMP const* img );
 
 struct image rotate( struct image const img );
 
-void show_header(struct bmp_header header);
+void show_header(struct bmp_header const header);
 
 uint32_t get_padding(int32_t biWidth);
 

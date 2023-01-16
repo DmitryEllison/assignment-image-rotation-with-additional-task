@@ -151,7 +151,7 @@ void read_status_print(enum read_status rs) {
     }
 }
 
-void show_header(struct bmp_header header) {
+void show_header(struct bmp_header const header) {
     printf("\nHeader: \n");
     printf("\tbiWidth: %d\n", header.biWidth);
     printf("\tbiHeight: %d\n", header.biHeight);

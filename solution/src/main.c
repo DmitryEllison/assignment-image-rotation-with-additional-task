@@ -14,6 +14,8 @@ int main( int argc, char** argv ) {
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
     read_status_print(rs);
 
+    show_header(bmp.header);
+
     // extract pixels from puffer to image
     buffer2image(&bmp);
     bmp.image = rotate(bmp.image);
