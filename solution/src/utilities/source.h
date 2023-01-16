@@ -1,6 +1,7 @@
 #include  <stdint.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <malloc.h>
 
 
 struct __attribute__((packed)) bmp_header {
@@ -70,9 +71,3 @@ void read_status_print(enum read_status rs);
 void write_status_print(enum write_status ws);
 
 void update_header_and_padding(struct BMP* bmp);
-
-struct BMP null_bmp();
-
-void show_image(struct image const img);
-
-void show_buffer(struct BMP const bmp);

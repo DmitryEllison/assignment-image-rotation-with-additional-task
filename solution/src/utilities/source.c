@@ -1,4 +1,3 @@
-#include <malloc.h>
 #include "source.h"
 
 uint32_t get_padding(int32_t biWidth) {
@@ -11,7 +10,6 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
         return READ_INVALID_HEADER;
     }
 
-    show_header(bmp->header);
     // Проверяем сигнатуру
     if (bmp->header.bfType != 0x4D42) {
         return READ_INVALID_SIGNATURE;
@@ -21,8 +19,9 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
         return READ_INVALID_BITS;
     }
 
-    bmp->buffer = malloc(bmp->header.biSizeImage);
     bmp->padding = get_padding(bmp->header.biWidth);
+    bmp->header.biSizeImage = (3 * bmp->header.biWidth + bmp->padding) * bmp->header.biHeight;
+    bmp->buffer = malloc(bmp->header.biSizeImage);
 
     if (fread(bmp->buffer, bmp->header.biSizeImage, 1, in) != 1) {
         free(bmp->buffer);
@@ -99,13 +98,10 @@ void image2buffer(struct BMP* bmp) {
     size_t index = 0;
     for (size_t i = 0; i < bmp->image.height; ++i) {
         for (size_t j = 0; j < bmp->image.width; ++j) {
-            index = 3 * (bmp->header.biWidth * i + j) + i * bmp->padding;
-            bmp->buffer[index + 0] = bmp->image.data[j + i * bmp->padding].b;
-            bmp->buffer[index + 1] = bmp->image.data[j + i * bmp->padding].g;
-            bmp->buffer[index + 2] = bmp->image.data[j + i * bmp->padding].r;
-        }
-        for (size_t k = index + 3; k < index + bmp->padding; ++k) {
-            bmp->buffer[k] = 0;
+            index = bmp->header.biWidth * i + j;
+            bmp->buffer[3 * index + 0 + i * bmp->padding] = bmp->image.data[index].b;
+            bmp->buffer[3 * index + 1 + i * bmp->padding] = bmp->image.data[index].g;
+            bmp->buffer[3 * index + 2 + i * bmp->padding] = bmp->image.data[index].r;
         }
     }
     free(bmp->image.data);
@@ -155,19 +151,6 @@ void read_status_print(enum read_status rs) {
     }
 }
 
-struct BMP null_bmp() {
-    return (struct BMP) {
-            .image = (struct image) {
-                    .height = 0,
-                    .width = 0,
-                    .data = NULL
-            },
-            .header = NULL,
-            .buffer = NULL,
-            .padding = 0
-    };
-}
-
 void show_header(struct bmp_header header) {
     printf("\nHeader: \n");
     printf("\tbiWidth: %d\n", header.biWidth);
@@ -177,21 +160,4 @@ void show_header(struct bmp_header header) {
     printf("\tbiSize: %d\n", header.biSize);
     printf("\tbfType: %d\n", header.bfType);
     printf("\tbfileSize: %d\n", header.bfileSize);
-}
-
-void show_image(struct image const img) {
-    printf("\n");
-    for (size_t i = 0; i < img.height * img.width ; ++i) {
-        printf("[%" PRIu8 ", %" PRIu8 ", %" PRIu8 "]", img.data[i].b, img.data[i].g, img.data[i].r);
-    }
-    printf("\n");
-}
-
-
-void show_buffer(struct BMP const bmp) {
-    printf("\n\n");
-    for (size_t i = 0; i < bmp.header.biSizeImage; ++i) {
-        printf("%" PRIu8 " ", bmp.buffer[i]);
-    }
-    printf("\n\n");
 }

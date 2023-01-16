@@ -1,6 +1,5 @@
 #include "utilities/source.h"
 
-
 int main( int argc, char** argv ) {
     (void) argc; (void) argv;
 
@@ -9,24 +8,18 @@ int main( int argc, char** argv ) {
         return -2;
     }
 
-    struct BMP bmp = null_bmp();
+    struct BMP bmp = {0};
 
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
     read_status_print(rs);
 
     // extract pixels from puffer to image
-    //show_buffer(bmp);// --------------------------------------------
     buffer2image(&bmp);
-
-    //show_image(bmp.image);
     bmp.image = rotate(bmp.image);
     update_header_and_padding(&bmp);
     // add padding and move pixels to buffer
     image2buffer(&bmp);
-
-    //show_buffer(bmp); // --------------------------------------------
-    //show_header(bmp.header);
 
     // write
     enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
@@ -34,4 +27,3 @@ int main( int argc, char** argv ) {
 
     return 0;
 }
-
