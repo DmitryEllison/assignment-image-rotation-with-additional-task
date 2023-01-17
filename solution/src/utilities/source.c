@@ -33,7 +33,6 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
 }
 
 enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
-
     if (fwrite(&bmp->header, sizeof(struct bmp_header), 1, out) != 1) {
         free(bmp->buffer);
         return WRITE_HEADER_ERROR;

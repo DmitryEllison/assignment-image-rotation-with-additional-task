@@ -9,6 +9,7 @@ int main( int argc, char** argv ) {
     }
 
     struct BMP bmp = {0};
+    bmp.header = (struct bmp_header) {0};
 
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
