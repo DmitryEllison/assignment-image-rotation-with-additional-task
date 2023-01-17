@@ -9,6 +9,7 @@ int main( int argc, char** argv ) {
     }
 
     struct BMP bmp = {0};
+    bmp.buffer = 0;
 
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
@@ -24,7 +25,6 @@ int main( int argc, char** argv ) {
     image2buffer(&bmp);
 
     // write
-    bmp.header = fill_header(bmp.header.biSizeImage, bmp.header.biWidth, bmp.header.biHeight);
     enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
     write_status_print(ws);
 
