@@ -1,4 +1,5 @@
 #include "source.h"
+#pragma diag_suppress 42
 
 uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
