@@ -86,8 +86,10 @@ void update_header_and_padding(struct BMP* bmp) {
 }
 
 void image2buffer(struct BMP* bmp) {
-    bmp->buffer = 0;
     bmp->buffer = malloc(bmp->header.biSizeImage);
+    for (uint32_t i = 0; i < bmp->header.biSizeImage; ++i) {
+        bmp->buffer[i] = 0;
+    }
     size_t index = 0;
     for (size_t i = 0; i < bmp->image.height; ++i) {
         for (size_t j = 0; j < bmp->image.width; ++j) {
