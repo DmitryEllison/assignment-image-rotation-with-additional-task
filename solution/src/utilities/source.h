@@ -70,6 +70,4 @@ void read_status_print(enum read_status rs);
 
 void write_status_print(enum write_status ws);
 
-struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t height);
-
 void update_header_and_padding(struct BMP* bmp);
