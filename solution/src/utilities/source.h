@@ -1,7 +1,7 @@
-#include  <stdint.h>
-#include <stdio.h>
 #include <inttypes.h>
 #include <malloc.h>
+#include <stdint.h>
+#include <stdio.h>
 
 
 struct __attribute__((packed)) bmp_header {
@@ -58,7 +58,7 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp);
 
 struct image rotate( struct image const img );
 
-void show_header(struct bmp_header const header);
+void show_header(struct bmp_header header);
 
 uint32_t get_padding(uint32_t biWidth);
 
