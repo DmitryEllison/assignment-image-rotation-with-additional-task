@@ -33,7 +33,6 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
 }
 
 enum write_status to_bmp( FILE* out, struct BMP* bmp ) {
-    enum write_status ws;
     fwrite(&bmp->header, sizeof(struct bmp_header), 1, out);
     fwrite(bmp->buffer, bmp->header.biSizeImage, 1, out) ;
 
