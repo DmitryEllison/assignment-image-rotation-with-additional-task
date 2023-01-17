@@ -29,6 +29,7 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
     }
 
     rewind(in);
+    fclose(in);
     return READ_OK;
 }
 
@@ -46,6 +47,7 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
 
     free(bmp->buffer);
     rewind(out);
+    fclose(out);
     return WRITE_OK;
 }
 
