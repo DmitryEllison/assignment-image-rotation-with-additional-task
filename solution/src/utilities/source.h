@@ -54,7 +54,7 @@ struct BMP {
 
 enum read_status from_bmp( FILE* in, struct BMP* bmp );
 
-enum write_status to_bmp( FILE* out, struct BMP const* img );
+enum write_status to_bmp( FILE* out, struct BMP const* bmp);
 
 struct image rotate( struct image const img );
 

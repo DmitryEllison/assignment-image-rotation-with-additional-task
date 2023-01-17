@@ -156,7 +156,7 @@ void show_header(struct bmp_header const header) {
     printf("\tbiWidth: %d\n", header.biWidth);
     printf("\tbiHeight: %d\n", header.biHeight);
     printf("\tbiSizeImage: %d\n", header.biSizeImage);
-    printf("\tPadding: %d bytes.\n", get_padding(header.biWidth));
+    printf("\tPadding: %" PRIu32 "bytes.\n", get_padding(header.biWidth));
     printf("\tbiSize: %d\n", header.biSize);
     printf("\tbfType: %d\n", header.bfType);
     printf("\tbfileSize: %d\n", header.bfileSize);
