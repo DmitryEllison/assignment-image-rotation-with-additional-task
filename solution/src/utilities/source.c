@@ -38,7 +38,7 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
         return WRITE_HEADER_ERROR;
     }
 
-    if (fwrite(bmp->buffer, bmp->header.biSizeImage, 1, out) == 0) {
+    if (bmp->buffer != NULL && fwrite(bmp->buffer, bmp->header.biSizeImage, 1, out) == 0) {
         free(bmp->buffer);
         return WRITE_BUFFER_ERROR;
     }
