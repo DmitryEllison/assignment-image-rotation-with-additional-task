@@ -28,7 +28,6 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
         return READ_INVALID_BITS;
     }
 
-    rewind(in);
     fclose(in);
     return READ_OK;
 }
@@ -48,7 +47,6 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
     }
 
     free(bmp->buffer);
-    rewind(out);
     fclose(out);
     return WRITE_OK;
 }
@@ -62,6 +60,7 @@ struct image rotate(struct image const img) {
             temp[j*height + height - (i + 1) ] = img.data[j + i * width];
         }
     }
+    free(img.data);
     return (struct image)
             {
                     .width = height,
