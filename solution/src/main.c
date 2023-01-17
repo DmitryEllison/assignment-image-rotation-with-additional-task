@@ -27,6 +27,5 @@ int main( int argc, char** argv ) {
     enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
     write_status_print(ws);
 
-    free(&bmp);
     return 0;
 }
