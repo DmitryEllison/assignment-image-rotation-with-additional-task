@@ -71,6 +71,7 @@ struct image rotate(struct image const img) {
 }
 
 void buffer2image(struct BMP* bmp) {
+    bmp->image.data = malloc(sizeof(struct pixel) * bmp->header.biWidth * bmp->header.biHeight);
     for (size_t i = 0; i < bmp->header.biHeight; ++i) {
         for (size_t j = 0; j < bmp->header.biWidth; ++j) {
             size_t index = 3 * (bmp->header.biWidth * i + j) + i * bmp->padding;
