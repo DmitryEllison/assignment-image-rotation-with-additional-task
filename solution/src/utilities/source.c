@@ -150,6 +150,22 @@ void read_status_print(enum read_status rs) {
     }
 }
 
+struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t height) {
+    struct bmp_header temp = {0};
+
+    temp.bfileSize = sizeof(struct bmp_header) + biSizeImage;
+    temp.bOffBits = sizeof(struct bmp_header);
+    temp.biSizeImage = biSizeImage;
+    temp.biWidth = width;
+    temp.biHeight = height;
+
+    temp.bfType = 0x4D42;
+    temp.biPlanes = 1;
+    temp.biBitCount = 24;
+    temp.biSize = 40;
+    return temp;
+}
+
 void show_header(struct bmp_header const header) {
     printf("\nHeader: \n");
     printf("\tbiWidth: %d\n", header.biWidth);
