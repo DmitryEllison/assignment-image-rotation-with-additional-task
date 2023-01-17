@@ -48,7 +48,7 @@ struct image {
 struct BMP {
     struct bmp_header header;
     struct image image;
-    uint8_t *buffer;
+    uint8_t* buffer;
     uint32_t padding;
 };
 

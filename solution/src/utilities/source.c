@@ -1,5 +1,5 @@
 #include "source.h"
-#pragma diag_suppress 42
+#pragma warn 42
 
 uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
@@ -94,6 +94,7 @@ void update_header_and_padding(struct BMP* bmp) {
 }
 
 void image2buffer(struct BMP* bmp) {
+    bmp->buffer = 0;
     bmp->buffer = malloc(bmp->header.biSizeImage);
     size_t index = 0;
     for (size_t i = 0; i < bmp->image.height; ++i) {
