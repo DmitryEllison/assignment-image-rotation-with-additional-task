@@ -33,19 +33,19 @@ enum read_status from_bmp( FILE* in, struct BMP* bmp ) {
 }
 
 enum write_status to_bmp( FILE* out, struct BMP* bmp ) {
+    enum write_status ws;
     if (fwrite(&bmp->header, sizeof(struct bmp_header), 1, out) != 1) {
-        free(bmp->buffer);
-        return WRITE_HEADER_ERROR;
+        ws = WRITE_HEADER_ERROR;
     }
 
     if (fwrite(bmp->buffer, bmp->header.biSizeImage, 1, out) == 0) {
-        free(bmp->buffer);
-        return WRITE_BUFFER_ERROR;
+        ws = WRITE_BUFFER_ERROR;
     }
 
     free(bmp->buffer);
     fclose(out);
-    return WRITE_OK;
+    ws = WRITE_OK;
+    return ws;
 }
 
 struct image rotate(struct image const img) {
