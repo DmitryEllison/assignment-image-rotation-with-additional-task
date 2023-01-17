@@ -50,8 +50,8 @@ enum write_status to_bmp( FILE* out, struct BMP const* bmp ) {
 }
 
 struct image rotate(struct image const img) {
-    int64_t width = img.width;
-    int64_t height = img.height;
+    uint64_t width = img.width;
+    uint64_t height = img.height;
     struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
     for (uint64_t i = 0; i < height; i++) {
         for (uint64_t j = 0; j < width; j++) {

@@ -49,10 +49,10 @@ struct BMP {
     struct bmp_header header;
     struct image image;
     uint8_t *buffer;
-    int32_t padding;
+    uint32_t padding;
 };
 
-enum read_status from_bmp( FILE* in, struct BMP* img );
+enum read_status from_bmp( FILE* in, struct BMP* bmp );
 
 enum write_status to_bmp( FILE* out, struct BMP const* img );
 
