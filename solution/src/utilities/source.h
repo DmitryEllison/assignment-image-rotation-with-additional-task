@@ -60,7 +60,7 @@ struct image rotate( struct image const img );
 
 void show_header(struct bmp_header const header);
 
-uint32_t get_padding(int32_t biWidth);
+uint32_t get_padding(uint32_t biWidth);
 
 void buffer2image(struct BMP* bmp);
 

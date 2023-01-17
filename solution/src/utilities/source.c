@@ -1,6 +1,6 @@
 #include "source.h"
 
-uint32_t get_padding(int32_t biWidth) {
+uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
 }
 
