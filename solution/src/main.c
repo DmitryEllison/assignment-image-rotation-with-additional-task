@@ -13,8 +13,9 @@ int main( int argc, char** argv ) {
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
     read_status_print(rs);
-
     show_header(bmp.header);
+
+    bmp.image.data = malloc(sizeof(struct pixel) * bmp.header.biWidth * bmp.header.biHeight);
 
     // extract pixels from puffer to image
     buffer2image(&bmp);
