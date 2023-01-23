@@ -44,20 +44,8 @@ struct image {
     struct pixel* data;
 };
 
+enum read_status from_bmp( FILE* in, struct image* img, struct bmp_header header );
 
-struct BMP {
-    struct bmp_header header;
-    struct image image;
-    uint8_t* buffer;
-    uint32_t padding;
-};
-
-
-enum read_status from_bmp( FILE* in, struct BMP* bmp );
-
-enum write_status to_bmp( FILE* out, struct BMP* bmp);
+enum write_status to_bmp( FILE* out, struct image* img, struct bmp_header header );
 
 struct image rotate( struct image const img );
-
-
-

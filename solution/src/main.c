@@ -11,23 +11,22 @@ int main( int argc, char** argv ) {
         return -2;
     }
 
-    struct BMP bmp = {0};
+    FILE* in = fopen(argv[1], "rb");
+    FILE* out = fopen(argv[2], "wb");
     // read in buffer
-    enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
+
+    struct image img = {0};
+    struct bmp_header header = {0};
+
+    enum read_status rs = from_bmp(in, &img, header);
     read_status_print(stdout, rs);
 
-    show_header(bmp.header);
+    img = rotate(img);
 
-    // extract pixels from puffer to image
-    buffer2image(&bmp);
-    bmp.image = rotate(bmp.image);
-    update_header_and_padding(&bmp);
-    // add padding and move pixels to buffer
-    image2buffer(&bmp);
-
-    // write
-    enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
+    enum write_status ws = to_bmp(out, &img, header);
     write_status_print(stdout, ws);
 
+    fclose(in);
+    fclose(out);
     return 0;
 }
