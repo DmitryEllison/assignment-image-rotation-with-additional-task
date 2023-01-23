@@ -12,7 +12,7 @@ int main( int argc, char** argv ) {
 
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
-    read_status_print(rs);
+    read_status_print(stdout, rs);
 
     show_header(bmp.header);
 
@@ -25,7 +25,7 @@ int main( int argc, char** argv ) {
 
     // write
     enum write_status ws = to_bmp(fopen(argv[2], "wb"), &bmp);
-    write_status_print(ws);
+    write_status_print(stdout, ws);
 
     return 0;
 }

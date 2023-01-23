@@ -108,48 +108,21 @@ void image2buffer(struct BMP* bmp) {
     free(bmp->image.data);
 }
 
-void write_status_print(enum write_status ws) {
-    switch (ws) {
-        case WRITE_OK: {
-            printf("\nFile has been written well.");
-            break;
-        }
-        case WRITE_HEADER_ERROR: {
-            printf("\nSomething went wrong with writing header.");
-            break;
-        }
-        case WRITE_BUFFER_ERROR: {
-            printf("\nSomething went wrong with writing buffer.");
-            break;
-        }
-        default: {
-            printf("Something went wrong with writing changed image in the file");
-        }
-    }
+const char* write_out[3] = {"File has been written well.\n",
+                            "Something went wrong with writing buffer\n",
+                            "Something went wrong with writing header\n"};
+
+void write_status_print(FILE* f, enum write_status ws) {
+    fprintf(f, "%s", write_out[(size_t)ws]);
 }
 
-void read_status_print(enum read_status rs) {
-    switch (rs) {
-        case READ_OK: {
-            printf("\nFile has been read well.");
-            break;
-        }
-        case READ_INVALID_BITS: {
-            printf("Invalid bits.");
-            break;
-        }
-        case READ_INVALID_HEADER: {
-            printf("Invalid source header.");
-            break;
-        }
-        case READ_INVALID_SIGNATURE:{
-            printf("Invalid signature.");
-            break;
-        }
-        default: {
-            printf("Something went wrong with reading of file");
-        }
-    }
+const char* read_out[4] = {"File has been read well.\n",
+                           "Invalid bits.\n",
+                           "Invalid source header.\n",
+                           "Invalid signature.\n"};
+
+void read_status_print(FILE* f, enum read_status rs) {
+    fprintf(f,read_out[(size_t)rs]);
 }
 
 struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t height) {

@@ -33,10 +33,11 @@ enum read_status  {
     READ_INVALID_HEADER = -5
 };
 
+
 enum  write_status  {
     WRITE_OK = 0,
-    WRITE_HEADER_ERROR = -666,
-    WRITE_BUFFER_ERROR = -999
+    WRITE_HEADER_ERROR = 1,
+    WRITE_BUFFER_ERROR = 2
 };
 
 struct image {
@@ -66,8 +67,8 @@ void buffer2image(struct BMP* bmp);
 
 void image2buffer(struct BMP* bmp);
 
-void read_status_print(enum read_status rs);
+void read_status_print(FILE* f, enum read_status rs);
 
-void write_status_print(enum write_status ws);
+void write_status_print(FILE* f, enum write_status ws);
 
 void update_header_and_padding(struct BMP* bmp);
