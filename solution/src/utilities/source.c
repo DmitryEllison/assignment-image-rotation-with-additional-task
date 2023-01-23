@@ -16,10 +16,6 @@ struct bmp_header read_bmp_header(FILE* in) {
 
 // READ BMP FILE AND RETURN IMAGE
 enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header ) {
-    // Считали хедер
-    if (fread(&(header), sizeof(struct bmp_header), 1, in) != 1) {
-        return READ_INVALID_HEADER;
-    }
 
     // Проверяем сигнатуру
     if (header.bfType != 0x4D42) {
@@ -50,6 +46,8 @@ enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header 
         return READ_INVALID_BITS;
     }
 
+    img->height = header.biHeight;
+    img->width = header.biWidth;
     return READ_OK;
 }
 

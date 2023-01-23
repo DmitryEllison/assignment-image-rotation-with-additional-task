@@ -13,19 +13,26 @@ int main( int argc, char** argv ) {
 
     FILE* in = fopen(argv[1], "rb");
     FILE* out = fopen(argv[2], "wb");
-    // read in buffer
 
     struct image img = {0};
     struct bmp_header header = read_bmp_header(in);
 
     enum read_status rs = from_bmp(in, &img, header);
-    read_status_print(stdout, rs);
+
+    if ((size_t)rs >= 1)
+        read_status_print(stderr, rs);
+    else
+        read_status_print(stdout, rs);
 
     show_header(header);
     img = rotate(img);
 
     enum write_status ws = to_bmp(out, &img, header);
-    write_status_print(stdout, ws);
+
+    if ((size_t)ws >= 1)
+        write_status_print(stderr, ws);
+    else
+        write_status_print(stdout, ws);
 
     free(img.data);
     fclose(in);

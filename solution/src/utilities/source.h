@@ -27,9 +27,9 @@ struct pixel {
 
 enum read_status  {
     READ_OK = 0,
-    READ_INVALID_SIGNATURE = -3,
-    READ_INVALID_BITS = -4,
-    READ_INVALID_HEADER = -5
+    READ_INVALID_SIGNATURE = 1,
+    READ_INVALID_BITS = 2,
+    READ_INVALID_HEADER = 3
 };
 
 
