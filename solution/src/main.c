@@ -1,6 +1,7 @@
 #include "utilities/source.h"
 #include "utilities/transformation.h"
-#include "utilities/debug.h"
+#include "utilities/wedebug.h"
+
 
 int main( int argc, char** argv ) {
     (void) argc; (void) argv;

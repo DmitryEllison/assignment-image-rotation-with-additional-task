@@ -1,6 +1,6 @@
 #include "source.h"
 #include "transformation.h"
-#include "debug.h"
+#include "wedebug.h"
 
 
 uint32_t get_padding(uint32_t biWidth) {
