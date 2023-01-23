@@ -16,11 +16,12 @@ int main( int argc, char** argv ) {
     // read in buffer
 
     struct image img = {0};
-    struct bmp_header header = {0};
+    struct bmp_header header = read_bmp_header(in);
 
     enum read_status rs = from_bmp(in, &img, header);
     read_status_print(stdout, rs);
 
+    show_header(header);
     img = rotate(img);
 
     enum write_status ws = to_bmp(out, &img, header);

@@ -7,10 +7,15 @@ uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
 }
 
+struct bmp_header read_bmp_header(FILE* in) {
+    struct bmp_header result = {0};
+    if (fread(&result , sizeof(struct bmp_header), 1, in) == 1) {
+        return result;
+    }
+}
+
 // READ BMP FILE AND RETURN IMAGE
-enum read_status from_bmp( FILE* in, struct image* img, struct bmp_header header ) {
-    // TODO read header
-    // TODO read image without padding
+enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header ) {
     // Считали хедер
     if (fread(&(header), sizeof(struct bmp_header), 1, in) != 1) {
         return READ_INVALID_HEADER;
@@ -56,7 +61,7 @@ void update_header(struct bmp_header* header, size_t image_width, size_t image_h
 }
 
 
-enum write_status to_bmp( FILE* out, struct image* img, struct bmp_header header ) {
+enum write_status to_bmp(FILE* out, struct image* img, struct bmp_header header ) {
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
         return WRITE_HEADER_ERROR;
     }
@@ -138,7 +143,7 @@ void show_header(struct bmp_header const header) {
     printf("\tbiWidth: %d\n", header.biWidth);
     printf("\tbiHeight: %d\n", header.biHeight);
     printf("\tbiSizeImage: %d\n", header.biSizeImage);
-    printf("\tPadding: %" PRIu32 "bytes.\n", get_padding(header.biWidth));
+    printf("\tPadding: %" PRIu32 " bytes.\n", get_padding(header.biWidth));
     printf("\tbiSize: %d\n", header.biSize);
     printf("\tbfType: %d\n", header.bfType);
     printf("\tbfileSize: %d\n", header.bfileSize);

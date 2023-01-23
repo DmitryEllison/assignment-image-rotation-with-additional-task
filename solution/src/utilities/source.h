@@ -44,8 +44,10 @@ struct image {
     struct pixel* data;
 };
 
-enum read_status from_bmp( FILE* in, struct image* img, struct bmp_header header );
+struct bmp_header read_bmp_header(FILE* in);
 
-enum write_status to_bmp( FILE* out, struct image* img, struct bmp_header header );
+enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header );
+
+enum write_status to_bmp(FILE* out, struct image* img, struct bmp_header header );
 
 struct image rotate( struct image const img );
