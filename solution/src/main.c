@@ -26,6 +26,7 @@ int main( int argc, char** argv ) {
     enum write_status ws = to_bmp(out, &img, header);
     write_status_print(stdout, ws);
 
+    free(img.data);
     fclose(in);
     fclose(out);
     return 0;
