@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
 struct __attribute__((packed)) bmp_header {
     uint16_t bfType;
     uint32_t bfileSize; // header + buffer
@@ -53,22 +52,12 @@ struct BMP {
     uint32_t padding;
 };
 
+
 enum read_status from_bmp( FILE* in, struct BMP* bmp );
 
 enum write_status to_bmp( FILE* out, struct BMP* bmp);
 
 struct image rotate( struct image const img );
 
-void show_header(struct bmp_header header);
 
-uint32_t get_padding(uint32_t biWidth);
 
-void buffer2image(struct BMP* bmp);
-
-void image2buffer(struct BMP* bmp);
-
-void read_status_print(FILE* f, enum read_status rs);
-
-void write_status_print(FILE* f, enum write_status ws);
-
-void update_header_and_padding(struct BMP* bmp);

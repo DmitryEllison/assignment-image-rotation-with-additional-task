@@ -1,4 +1,6 @@
 #include "utilities/source.h"
+#include "utilities/transformation.h"
+#include "utilities/debug.h"
 
 int main( int argc, char** argv ) {
     (void) argc; (void) argv;
@@ -9,7 +11,6 @@ int main( int argc, char** argv ) {
     }
 
     struct BMP bmp = {0};
-
     // read in buffer
     enum read_status rs = from_bmp(fopen(argv[1], "rb"), &bmp);
     read_status_print(stdout, rs);

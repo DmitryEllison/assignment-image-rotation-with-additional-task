@@ -1,4 +1,7 @@
 #include "source.h"
+#include "transformation.h"
+#include "debug.h"
+
 
 uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
@@ -122,7 +125,7 @@ const char* read_out[4] = {"File has been read well.\n",
                            "Invalid signature.\n"};
 
 void read_status_print(FILE* f, enum read_status rs) {
-    fprintf(f,read_out[(size_t)rs]);
+    fprintf(f,"%s", read_out[(size_t)rs]);
 }
 
 struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t height) {
