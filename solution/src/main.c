@@ -18,16 +18,20 @@ int main( int argc, char** argv ) {
 
     enum read_status rs = from_bmp(in, &img);
     if ((size_t)rs >= 1)
+    {
         read_status_print(stderr, rs);
-    else
+        return rs;
+    } else
         read_status_print(stdout, rs);
 
     img = rotate(img);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)
+    {
         write_status_print(stderr, ws);
-    else
+        return ws;
+    } else
         write_status_print(stdout, ws);
 
     free(img.data);
