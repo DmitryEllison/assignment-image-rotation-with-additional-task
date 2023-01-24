@@ -22,7 +22,7 @@ int main( int argc, char** argv ) {
     else
         read_status_print(stdout, rs);
 
-    img = rotate(img);
+    rotate(&img);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)
@@ -31,7 +31,6 @@ int main( int argc, char** argv ) {
         write_status_print(stdout, ws);
 
     free(img.data);
-    free(&img);
     fclose(in);
     fclose(out);
     return 0;
