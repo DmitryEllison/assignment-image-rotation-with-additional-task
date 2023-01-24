@@ -9,13 +9,16 @@ uint32_t get_padding(uint32_t biWidth) {
 
 struct bmp_header read_bmp_header(FILE* in) {
     struct bmp_header result = {0};
-    if (fread(&result , sizeof(struct bmp_header), 1, in) == 1) {
-        return result;
-    }
+
 }
 
 // READ BMP FILE AND RETURN IMAGE
-enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header ) {
+enum read_status from_bmp(FILE *in, struct image *img) {
+    struct bmp_header header;
+
+    if (fread(&header , sizeof(struct bmp_header), 1, in) != 1) {
+        return READ_INVALID_HEADER;
+    }
 
     // Проверяем сигнатуру
     if (header.bfType != 0x4D42) {
@@ -48,6 +51,8 @@ enum read_status from_bmp(FILE* in, struct image* img, struct bmp_header header 
 
     img->height = header.biHeight;
     img->width = header.biWidth;
+
+    show_header(header);
     return READ_OK;
 }
 
@@ -59,11 +64,12 @@ void update_header(struct bmp_header* header, size_t image_width, size_t image_h
 }
 
 
-enum write_status to_bmp(FILE* out, struct image* img, struct bmp_header header ) {
+enum write_status to_bmp(FILE *out, struct image *img) {
+    struct bmp_header header = fill_header(img->width, img->height);
+
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
         return WRITE_HEADER_ERROR;
     }
-    update_header(&header, img->width, img->height);
 
     size_t padding = get_padding(header.biWidth);
     size_t index = 0;
@@ -82,6 +88,7 @@ enum write_status to_bmp(FILE* out, struct image* img, struct bmp_header header 
                 return WRITE_BUFFER_ERROR;
         }
     }
+    show_header(header);
     return WRITE_OK;
 }
 
@@ -120,8 +127,9 @@ void read_status_print(FILE* f, enum read_status rs) {
     fprintf(f,"%s", read_out[(size_t)rs]);
 }
 
-struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t height) {
+struct bmp_header fill_header(uint32_t width, uint32_t height) {
     struct bmp_header temp = {0};
+    uint32_t biSizeImage = (sizeof(struct pixel) * width + get_padding(width) ) * height;
 
     temp.bfileSize = sizeof(struct bmp_header) + biSizeImage;
     temp.bOffBits = sizeof(struct bmp_header);
@@ -134,6 +142,18 @@ struct bmp_header fill_header(uint32_t biSizeImage, uint32_t width, uint32_t hei
     temp.biBitCount = 24;
     temp.biSize = 40;
     return temp;
+}
+
+void show_image(FILE* f, struct image const img) {
+    for (size_t i = 0; i < img.height; ++i) {
+        for (size_t j = 0; j < img.width; ++j ) {
+            fprintf(f, "[%d %d %d] ",
+                    img.data[j + i * img.width].g,
+                    img.data[j + i * img.width].g,
+                    img.data[j + i * img.width].g);
+        }
+        printf("\n");
+    }
 }
 
 void show_header(struct bmp_header const header) {
