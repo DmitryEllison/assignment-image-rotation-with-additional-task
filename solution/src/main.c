@@ -17,7 +17,6 @@ int main( int argc, char** argv ) {
     struct image img = {0};
 
     enum read_status rs = from_bmp(in, &img);
-    show_image(stderr, &img);
     if ((size_t)rs >= 1)
         read_status_print(stderr, rs);
     else

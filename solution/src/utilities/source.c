@@ -54,8 +54,6 @@ enum write_status to_bmp(FILE *out, struct image *img) {
     size_t index;
     uint8_t zero = 0;
 
-    show_image(stderr, img);
-
     for (size_t i = 0; i < header.biHeight; ++i) {
         for (size_t j = 0; j < header.biWidth; ++j) {
             index = j + i * header.biWidth;
