@@ -143,6 +143,7 @@ struct image convolution(const struct image img, struct kernel const kernel) {
                                 kernel.kernel[array_index(i, j, kernel.width)];
                 }
             }
+
             result[array_index( y, x, img.width)] = uint16_to_pixel(temp);
         }
     }

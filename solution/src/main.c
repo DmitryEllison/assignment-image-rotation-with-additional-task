@@ -27,15 +27,25 @@ int main( int argc, char** argv ) {
 
 
     //img = rotate(img);
-    struct kernel kernel = {
+    struct kernel kernel3 = {
             .height = 3,
             .width = 3,
-            .kernel = (double[]){ 0.33, 0.66, 0.33,
-                                  0.6, 1.22, 0.66,
-                                  0.33, 0.66, 0.33} // блюр по Гауссу
+            .kernel = (double[]){ 0.11, 0.11, 0.11,
+                                  0.11, 0.11, 0.11,
+                                  0.11, 0.11, 0.11}
     };
 
-    img = convolution(img, kernel);
+    struct kernel kernel5 = {
+            .height = 5,
+            .width = 5,
+            .kernel = (double[]){ 0.04, 0.04, 0.04, 0.04, 0.04,
+                                  0.04, 0.04, 0.04, 0.04, 0.04,
+                                  0.04, 0.04, 0.04, 0.04, 0.04,
+                                  0.04, 0.04, 0.04, 0.04, 0.04,
+                                  0.04, 0.04, 0.04, 0.04, 0.04 }
+    };
+
+    img = convolution(img, kernel5);
 
 
     enum write_status ws = to_bmp(out, &img);
