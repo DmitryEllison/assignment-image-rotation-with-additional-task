@@ -2,12 +2,7 @@
 #include "transformation.h"
 #include "wedebug.h"
 
-
-uint32_t get_padding(uint32_t biWidth) {
-    return 4 - (biWidth * 3) % 4;
-}
-
-// READ BMP FILE AND RETURN IMAGE
+// ---- READING AND WRITING FILES
 enum read_status from_bmp(FILE *in, struct image *img) {
     struct bmp_header header;
 
@@ -42,7 +37,6 @@ enum read_status from_bmp(FILE *in, struct image *img) {
 enum write_status to_bmp(FILE *out, struct image *img) {
     struct bmp_header header = fill_header(img->width, img->height);
 
-    show_header(header);
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
         return WRITE_HEADER_ERROR;
     }
@@ -62,48 +56,14 @@ enum write_status to_bmp(FILE *out, struct image *img) {
                 return WRITE_BUFFER_ERROR;
         }
     }
-    show_header(header);
+
     return WRITE_OK;
 }
 
-uint64_t array_index(uint64_t i, uint64_t j, uint64_t width) {
-    return j + i * width;
-}
+// ---- WORK WITH HEADER
 
-struct image rotate(const struct image img) {
-    uint64_t width = img.width;
-    uint64_t height = img.height;
-    struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
-    for (uint64_t i = 0; i < height; i++) {
-        for (uint64_t j = 0; j < width; j++) {
-            temp[ array_index( j + 1,-(i + 1), height) ] = img.data[array_index(i, j, width) ]; // j*height + height - (i + 1)
-        }
-    }
-
-    free(img.data);
-
-    return (struct image) {
-            .width = height,
-            .height = width,
-            .data = temp
-    };
-}
-
-const char* write_out[3] = {"File has been written well.\n",
-                            "Something went wrong with writing buffer\n",
-                            "Something went wrong with writing header\n"};
-
-void write_status_print(FILE* f, enum write_status ws) {
-    fprintf(f, "%s", write_out[(size_t)ws]);
-}
-
-const char* read_out[4] = {"File has been read well.\n",
-                           "Due to reading: Invalid signature.\n",
-                           "Due to reading: Invalid bits.\n",
-                           "Due to reading: Invalid header.\n"};
-
-void read_status_print(FILE* f, enum read_status rs) {
-    fprintf(f,"%s", read_out[(size_t)rs]);
+uint32_t get_padding(uint32_t biWidth) {
+    return 4 - (biWidth * 3) % 4;
 }
 
 struct bmp_header fill_header(uint32_t width, uint32_t height) {
@@ -121,6 +81,101 @@ struct bmp_header fill_header(uint32_t width, uint32_t height) {
     temp.biBitCount = 24;
     temp.biSize = 40;
     return temp;
+}
+
+// ---- WORK WITH IMAGE ----
+
+static uint64_t array_index(uint64_t i, uint64_t j, uint64_t width) {
+    return j + i * width;
+}
+
+struct image rotate(const struct image img) {
+    uint64_t width = img.width;
+    uint64_t height = img.height;
+    struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
+    for (uint64_t i = 0; i < height; i++) {
+        for (uint64_t j = 0; j < width; j++) {
+            temp[ array_index( j + 1,-(i + 1), height) ] = img.data[array_index(i, j, width) ];
+        }
+    }
+
+    return (struct image) {
+            .width = height,
+            .height = width,
+            .data = temp
+    };
+}
+
+struct pixel uint16_to_pixel(struct uint16_pixel extend_pixel) {
+    return (struct pixel) {
+            .b = ( extend_pixel.b > 255) ? 255 : extend_pixel.b,
+            .g = ( extend_pixel.g > 255) ? 255 : extend_pixel.g,
+            .r = ( extend_pixel.r > 255) ? 255 : extend_pixel.r,
+    };
+}
+
+struct image convolution(const struct image img, struct kernel const kernel) {
+    struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
+    struct uint16_pixel temp = {0};
+    double kernel_value = 0;
+    int64_t x_kernel, y_kernel;
+
+    for (uint64_t y = 0; y < img.height; ++y) {
+        for (uint64_t x = 0; x < img.width; ++x) {
+
+            for (uint64_t i = 0; i < kernel.height; ++i) {
+                for (uint64_t j = 0; j < kernel.width; ++j) {
+                    // TODO check correct working with iteration
+                    x_kernel = x + (j - (kernel.width / 2));
+                    y_kernel = y + (i - (kernel.height / 2));
+
+                    if (x_kernel < 0 || x_kernel >= img.width ||
+                        y_kernel < 0 || y_kernel >= img.height)
+                        continue;
+
+                    temp.b += img.data[array_index(x_kernel, y_kernel, img.width)].b;
+                    temp.g += img.data[array_index(x_kernel, y_kernel, img.width)].g;
+                    temp.r += img.data[array_index(x_kernel, y_kernel, img.width)].r;
+
+                    kernel_value += kernel.kernel[array_index(i, j, kernel.width)];
+                }
+            }
+            // TODO: do we need it?
+            //  if kernel is not normalized
+            // kernel_value = kernel_value > 1 ? 1 : kernel_value;
+
+            temp.b /= kernel_value;
+            temp.g /= kernel_value;
+            temp.r /= kernel_value;
+
+            result[array_index(x, y, img.width)] = uint16_to_pixel(temp);
+        }
+    }
+
+    return (struct image) {
+        .width = img.width,
+        .height = img.height,
+        .data = result
+    };
+}
+
+// ---- SHOW DETAILS ----
+
+const char* write_out[3] = {"File has been written well.\n",
+                            "Something went wrong with writing buffer\n",
+                            "Something went wrong with writing header\n"};
+
+void write_status_print(FILE* f, enum write_status ws) {
+    fprintf(f, "%s", write_out[(size_t)ws]);
+}
+
+const char* read_out[4] = {"File has been read well.\n",
+                           "Due to reading: Invalid signature.\n",
+                           "Due to reading: Invalid bits.\n",
+                           "Due to reading: Invalid header.\n"};
+
+void read_status_print(FILE* f, enum read_status rs) {
+    fprintf(f,"%s", read_out[(size_t)rs]);
 }
 
 void show_image(FILE* f, struct image const* img) {

@@ -21,6 +21,10 @@ struct __attribute__((packed)) bmp_header {
     uint32_t biClrImportant;
 };
 
+struct uint16_pixel {
+    uint8_t b, g, r;
+};
+
 struct pixel {
     uint8_t b, g, r;
 };
@@ -44,8 +48,15 @@ struct image {
     struct pixel* data;
 };
 
+struct kernel {
+    const size_t height, width;
+    double* kernel;
+};
+
 enum read_status from_bmp(FILE *in, struct image *img);
 
 enum write_status to_bmp(FILE *out, struct image *img);
 
 struct image rotate(const struct image img );
+
+struct image convolution(const struct image img, struct kernel const krn);

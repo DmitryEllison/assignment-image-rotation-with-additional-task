@@ -15,6 +15,7 @@ int main( int argc, char** argv ) {
     FILE* out = fopen(argv[2], "wb");
 
     struct image img = {0};
+    struct pixel* old_pointer = img.data;
 
     enum read_status rs = from_bmp(in, &img);
     if ((size_t)rs >= 1)
@@ -24,7 +25,18 @@ int main( int argc, char** argv ) {
     } else
         read_status_print(stdout, rs);
 
-    img = rotate(img);
+
+    //img = rotate(img);
+    struct kernel kernel = {
+            .height = 3,
+            .width = 3,
+            .kernel = (double[]){ 0.33, 0.33, 0.33,
+                                  0.33, 0.33, 0.33,
+                                  0.33, 0.33, 0.33}
+    };
+
+    img = convolution(img, kernel);
+
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)
@@ -34,6 +46,7 @@ int main( int argc, char** argv ) {
     } else
         write_status_print(stdout, ws);
 
+    free(old_pointer);
     free(img.data);
     fclose(in);
     fclose(out);
