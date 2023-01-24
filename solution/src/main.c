@@ -31,6 +31,7 @@ int main( int argc, char** argv ) {
         write_status_print(stdout, ws);
 
     free(img.data);
+    free(&img);
     fclose(in);
     fclose(out);
     return 0;
