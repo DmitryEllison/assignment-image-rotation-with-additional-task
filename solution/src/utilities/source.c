@@ -20,20 +20,16 @@ enum read_status from_bmp(FILE *in, struct image *img) {
         return READ_INVALID_SIGNATURE;
     }
 
+
     if (fseek(in, (long) header.bOffBits, SEEK_SET) != 0) {
         return READ_INVALID_BITS;
     }
-
     size_t padding = get_padding(header.biWidth);
     img->data =  malloc(sizeof(struct pixel) * header.biWidth * header.biHeight);
 
     for (size_t i = 0; i < header.biHeight; ++i) {
         fread(img->data + (i * header.biWidth), sizeof(struct pixel), header.biWidth,in);
         fseek(in, (long) padding, SEEK_CUR);
-    }
-    if (fgetc(in) != EOF) {
-        fclose(in);
-        return READ_INVALID_BITS;
     }
 
     img->height = header.biHeight;
@@ -46,6 +42,7 @@ enum read_status from_bmp(FILE *in, struct image *img) {
 enum write_status to_bmp(FILE *out, struct image *img) {
     struct bmp_header header = fill_header(img->width, img->height);
 
+    show_header(header);
     if (fwrite(&header, sizeof(struct bmp_header), 1, out) != 1) {
         return WRITE_HEADER_ERROR;
     }
@@ -101,9 +98,9 @@ void write_status_print(FILE* f, enum write_status ws) {
 }
 
 const char* read_out[4] = {"File has been read well.\n",
-                           "Invalid bits.\n",
-                           "Invalid source header.\n",
-                           "Invalid signature.\n"};
+                           "Due to reading: Invalid signature.\n",
+                           "Due to reading: Invalid bits.\n",
+                           "Due to reading: Invalid header.\n"};
 
 void read_status_print(FILE* f, enum read_status rs) {
     fprintf(f,"%s", read_out[(size_t)rs]);
@@ -147,4 +144,5 @@ void show_header(struct bmp_header const header) {
     printf("\tbiSize: %d\n", header.biSize);
     printf("\tbfType: %d\n", header.bfType);
     printf("\tbfileSize: %d\n", header.bfileSize);
+    printf("\tbOffBits: %d\n", header.bOffBits);
 }
