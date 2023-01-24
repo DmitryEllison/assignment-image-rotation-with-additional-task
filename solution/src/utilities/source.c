@@ -73,7 +73,7 @@ uint64_t array_index(uint64_t i, uint64_t j, uint64_t width) {
     return j + i * width;
 }
 
-struct image rotate(struct image img) {
+struct image rotate(const struct image img) {
     uint64_t width = img.width;
     uint64_t height = img.height;
     struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
