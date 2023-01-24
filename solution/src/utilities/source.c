@@ -106,7 +106,7 @@ void read_status_print(FILE* f, enum read_status rs) {
     fprintf(f,"%s", read_out[(size_t)rs]);
 }
 
-struct bmp_header static fill_header(uint32_t width, uint32_t height) {
+struct bmp_header fill_header(uint32_t width, uint32_t height) {
     struct bmp_header temp = {0};
     uint32_t biSizeImage = (sizeof(struct pixel) * width + get_padding(width) ) * height;
 
