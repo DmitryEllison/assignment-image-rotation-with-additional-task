@@ -69,19 +69,25 @@ enum write_status to_bmp(FILE *out, struct image *img) {
     return WRITE_OK;
 }
 
-void rotate(struct image* img) {
-    uint64_t width = img->width;
-    uint64_t height = img->height;
-    struct image* temp = malloc(sizeof(struct pixel) * width * height);
+uint64_t array_index(uint64_t i, uint64_t j, uint64_t width) {
+    return j + i * width;
+}
+
+struct image rotate(struct image img) {
+    uint64_t width = img.width;
+    uint64_t height = img.height;
+    struct pixel* temp = malloc(sizeof(struct pixel) * width * height);
     for (uint64_t i = 0; i < height; i++) {
         for (uint64_t j = 0; j < width; j++) {
-            temp->data[j*height + height - (i + 1) ] = img->data[j + i * width];
+            temp[ array_index( j + 1,-(i + 1), height) ] = img.data[array_index(i, j, width) ]; // j*height + height - (i + 1)
         }
     }
-    free(img);
-    img = temp;
-    img->width = height;
-    img->height = width;
+
+    return (struct image) {
+            .width = height,
+            .height = width,
+            .data = temp
+    };
 }
 
 const char* write_out[3] = {"File has been written well.\n",
