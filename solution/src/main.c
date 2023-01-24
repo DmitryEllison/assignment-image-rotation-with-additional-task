@@ -17,14 +17,13 @@ int main( int argc, char** argv ) {
     struct image img = {0};
 
     enum read_status rs = from_bmp(in, &img);
-    //show_image(stderr, img);
+    show_image(stderr, &img);
     if ((size_t)rs >= 1)
         read_status_print(stderr, rs);
     else
         read_status_print(stdout, rs);
 
-    img = rotate(img);
-    //show_image(stderr, img);
+    //img = rotate(img);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)

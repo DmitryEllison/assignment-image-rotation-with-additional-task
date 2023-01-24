@@ -30,19 +30,11 @@ enum read_status from_bmp(FILE *in, struct image *img) {
     }
 
     size_t padding = get_padding(header.biWidth);
-    header.biSizeImage = (3 * header.biWidth + padding) * header.biHeight;
     img->data =  malloc(sizeof(struct pixel) * header.biWidth * header.biHeight);
 
     for (size_t i = 0; i < header.biHeight; ++i) {
-        for (size_t j = 0; j < header.biWidth; ++j) {
-            img->data[i + j * header.biWidth] = (struct pixel) {
-                    fgetc(in),
-                    fgetc(in),
-                    fgetc(in)
-            };
-        }
-        for (size_t j = 0; j < padding; ++j)
-            fgetc(in);
+        fread(img->data + (i * header.biWidth), sizeof(struct pixel), header.biWidth,in);
+        fseek(in, padding, SEEK_CUR);
     }
     if (fgetc(in) != EOF) {
         fclose(in);
@@ -52,15 +44,7 @@ enum read_status from_bmp(FILE *in, struct image *img) {
     img->height = header.biHeight;
     img->width = header.biWidth;
 
-    show_header(header);
     return READ_OK;
-}
-
-void update_header(struct bmp_header* header, size_t image_width, size_t image_height) {
-    header->bfileSize = sizeof(struct bmp_header) + (3 * image_width + get_padding(image_width)) * image_height;
-    header->biWidth = image_width;
-    header->biHeight = image_height;
-    header->biSizeImage = (sizeof(struct pixel) * image_width + get_padding(image_width) ) * image_height;
 }
 
 
@@ -74,6 +58,8 @@ enum write_status to_bmp(FILE *out, struct image *img) {
     size_t padding = get_padding(header.biWidth);
     size_t index = 0;
     uint8_t zero = 0;
+
+    show_image(stderr, img);
 
     for (size_t i = 0; i < header.biHeight; ++i) {
         for (size_t j = 0; j < header.biWidth; ++j) {
@@ -142,13 +128,13 @@ struct bmp_header fill_header(uint32_t width, uint32_t height) {
     return temp;
 }
 
-void show_image(FILE* f, struct image const img) {
-    for (size_t i = 0; i < img.height; ++i) {
-        for (size_t j = 0; j < img.width; ++j ) {
+void show_image(FILE* f, struct image const* img) {
+    for (size_t i = 0; i < img->height; ++i) {
+        for (size_t j = 0; j < img->width; ++j ) {
             fprintf(f, "[%d %d %d] ",
-                    img.data[j + i * img.width].g,
-                    img.data[j + i * img.width].g,
-                    img.data[j + i * img.width].g);
+                    img->data[j + i * img->width].g,
+                    img->data[j + i * img->width].g,
+                    img->data[j + i * img->width].g);
         }
         printf("\n");
     }
