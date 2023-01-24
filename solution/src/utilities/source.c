@@ -86,8 +86,8 @@ struct bmp_header fill_header(uint32_t width, uint32_t height) {
 
 // ---- WORK WITH IMAGE ----
 
-static uint64_t array_index(uint64_t i, uint64_t j, uint64_t width) {
-    return j + i * width;
+static uint64_t array_index(uint64_t by_line, uint64_t by_column, uint64_t width) {
+    return by_column + by_line * width;
 }
 
 struct image rotate(const struct image img) {
@@ -118,7 +118,6 @@ struct pixel uint16_to_pixel(struct uint16_pixel extend_pixel) {
 struct image convolution(const struct image img, struct kernel const kernel) {
     struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
     struct uint16_pixel temp = {0};
-    double kernel_value = 0;
     int64_t x_kernel, y_kernel;
 
     for (uint64_t y = 0; y < img.height; ++y) {
@@ -126,33 +125,24 @@ struct image convolution(const struct image img, struct kernel const kernel) {
             temp.b = 0;
             temp.g = 0;
             temp.r = 0;
-            kernel_value = 0;
 
             for (uint64_t i = 0; i < kernel.height; ++i) {
                 for (uint64_t j = 0; j < kernel.width; ++j) {
-                    // TODO check correct working with iteration
-                    x_kernel = x + (j - (kernel.width / 2));
                     y_kernel = y + (i - (kernel.height / 2));
+                    x_kernel = x + (j - (kernel.width / 2));
 
                     if (x_kernel < 0 || x_kernel >= img.width ||
                         y_kernel < 0 || y_kernel >= img.height)
                         continue;
 
-                    temp.b += img.data[array_index(y_kernel, x_kernel, img.width)].b;
-                    temp.g += img.data[array_index(y_kernel, x_kernel , img.width)].g;
-                    temp.r += img.data[array_index(y_kernel, x_kernel , img.width)].r;
-
-                    kernel_value += kernel.kernel[array_index(i, j, kernel.width)];
+                    temp.b += img.data[array_index(y_kernel, x_kernel, img.width)].b *
+                                kernel.kernel[array_index(i, j, kernel.width)];
+                    temp.g += img.data[array_index(y_kernel, x_kernel , img.width)].g *
+                                kernel.kernel[array_index(i, j, kernel.width)];
+                    temp.r += img.data[array_index(y_kernel, x_kernel , img.width)].r *
+                                kernel.kernel[array_index(i, j, kernel.width)];
                 }
             }
-            // TODO: do we need it?
-            //  if kernel is not normalized
-            kernel_value = kernel_value > 1 ? 1 : kernel_value;
-
-            temp.b /= kernel_value;
-            temp.g /= kernel_value;
-            temp.r /= kernel_value;
-
             result[array_index( y, x, img.width)] = uint16_to_pixel(temp);
         }
     }
