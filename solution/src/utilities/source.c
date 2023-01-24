@@ -78,9 +78,7 @@ enum write_status to_bmp(FILE *out, struct image *img) {
     for (size_t i = 0; i < header.biHeight; ++i) {
         for (size_t j = 0; j < header.biWidth; ++j) {
             index = j + i * header.biWidth;
-            if (fwrite(&img->data[index].g, 1, 1, out) != 1 &&
-                fwrite(&img->data[index].b, 1, 1, out) != 1 &&
-                fwrite(&img->data[index].r, 1, 1, out))
+            if (fwrite(img->data + index, sizeof(struct pixel), 1, out) != 1)
                 return WRITE_BUFFER_ERROR;
         }
         for (size_t j = 0; j < padding; ++j) {
