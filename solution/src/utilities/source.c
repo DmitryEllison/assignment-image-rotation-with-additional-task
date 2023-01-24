@@ -3,7 +3,7 @@
 #include "wedebug.h"
 
 
-uint32_t get_padding(uint32_t biWidth) {
+uint32_t static get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
 }
 
@@ -106,7 +106,7 @@ void read_status_print(FILE* f, enum read_status rs) {
     fprintf(f,"%s", read_out[(size_t)rs]);
 }
 
-struct bmp_header fill_header(uint32_t width, uint32_t height) {
+struct bmp_header static fill_header(uint32_t width, uint32_t height) {
     struct bmp_header temp = {0};
     uint32_t biSizeImage = (sizeof(struct pixel) * width + get_padding(width) ) * height;
 
@@ -123,7 +123,7 @@ struct bmp_header fill_header(uint32_t width, uint32_t height) {
     return temp;
 }
 
-void show_image(FILE* f, struct image const* img) {
+void static show_image(FILE* f, struct image const* img) {
     for (size_t i = 0; i < img->height; ++i) {
         for (size_t j = 0; j < img->width; ++j ) {
             fprintf(f, "[%d %d %d] ",
@@ -135,7 +135,7 @@ void show_image(FILE* f, struct image const* img) {
     }
 }
 
-void show_header(struct bmp_header const header) {
+void static show_header(struct bmp_header const header) {
     printf("\nHeader: \n");
     printf("\tbiWidth: %d\n", header.biWidth);
     printf("\tbiHeight: %d\n", header.biHeight);
