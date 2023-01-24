@@ -83,6 +83,8 @@ struct image rotate(const struct image img) {
         }
     }
 
+    free(img.data);
+
     return (struct image) {
             .width = height,
             .height = width,
