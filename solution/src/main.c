@@ -30,9 +30,9 @@ int main( int argc, char** argv ) {
     struct kernel kernel = {
             .height = 3,
             .width = 3,
-            .kernel = (double[]){ 0.33, 0.33, 0.33,
-                                  0.33, 0.33, 0.33,
-                                  0.33, 0.33, 0.33}
+            .kernel = (double[]){ 0.33, 0.66, 0.33,
+                                  0.6, 1.22, 0.66,
+                                  0.33, 0.66, 0.33} // блюр по Гауссу
     };
 
     img = convolution(img, kernel);

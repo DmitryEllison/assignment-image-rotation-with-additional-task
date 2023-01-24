@@ -30,6 +30,7 @@ enum read_status from_bmp(FILE *in, struct image *img) {
     img->height = header.biHeight;
     img->width = header.biWidth;
 
+    show_header(header);
     return READ_OK;
 }
 
@@ -122,6 +123,10 @@ struct image convolution(const struct image img, struct kernel const kernel) {
 
     for (uint64_t y = 0; y < img.height; ++y) {
         for (uint64_t x = 0; x < img.width; ++x) {
+            temp.b = 0;
+            temp.g = 0;
+            temp.r = 0;
+            kernel_value = 0;
 
             for (uint64_t i = 0; i < kernel.height; ++i) {
                 for (uint64_t j = 0; j < kernel.width; ++j) {
@@ -133,22 +138,22 @@ struct image convolution(const struct image img, struct kernel const kernel) {
                         y_kernel < 0 || y_kernel >= img.height)
                         continue;
 
-                    temp.b += img.data[array_index(x_kernel, y_kernel, img.width)].b;
-                    temp.g += img.data[array_index(x_kernel, y_kernel, img.width)].g;
-                    temp.r += img.data[array_index(x_kernel, y_kernel, img.width)].r;
+                    temp.b += img.data[array_index(y_kernel, x_kernel, img.width)].b;
+                    temp.g += img.data[array_index(y_kernel, x_kernel , img.width)].g;
+                    temp.r += img.data[array_index(y_kernel, x_kernel , img.width)].r;
 
                     kernel_value += kernel.kernel[array_index(i, j, kernel.width)];
                 }
             }
             // TODO: do we need it?
             //  if kernel is not normalized
-            // kernel_value = kernel_value > 1 ? 1 : kernel_value;
+            kernel_value = kernel_value > 1 ? 1 : kernel_value;
 
             temp.b /= kernel_value;
             temp.g /= kernel_value;
             temp.r /= kernel_value;
 
-            result[array_index(x, y, img.width)] = uint16_to_pixel(temp);
+            result[array_index( y, x, img.width)] = uint16_to_pixel(temp);
         }
     }
 
