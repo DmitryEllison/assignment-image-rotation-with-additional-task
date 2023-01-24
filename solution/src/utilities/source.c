@@ -7,11 +7,6 @@ uint32_t get_padding(uint32_t biWidth) {
     return 4 - (biWidth * 3) % 4;
 }
 
-struct bmp_header read_bmp_header(FILE* in) {
-    struct bmp_header result = {0};
-
-}
-
 // READ BMP FILE AND RETURN IMAGE
 enum read_status from_bmp(FILE *in, struct image *img) {
     struct bmp_header header;
@@ -25,7 +20,7 @@ enum read_status from_bmp(FILE *in, struct image *img) {
         return READ_INVALID_SIGNATURE;
     }
 
-    if (fseek(in, header.bOffBits, SEEK_SET) != 0) {
+    if (fseek(in, (long) header.bOffBits, SEEK_SET) != 0) {
         return READ_INVALID_BITS;
     }
 
@@ -34,7 +29,7 @@ enum read_status from_bmp(FILE *in, struct image *img) {
 
     for (size_t i = 0; i < header.biHeight; ++i) {
         fread(img->data + (i * header.biWidth), sizeof(struct pixel), header.biWidth,in);
-        fseek(in, padding, SEEK_CUR);
+        fseek(in, (long) padding, SEEK_CUR);
     }
     if (fgetc(in) != EOF) {
         fclose(in);
@@ -56,7 +51,7 @@ enum write_status to_bmp(FILE *out, struct image *img) {
     }
 
     size_t padding = get_padding(header.biWidth);
-    size_t index = 0;
+    size_t index;
     uint8_t zero = 0;
 
     show_image(stderr, img);
