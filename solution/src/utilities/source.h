@@ -1,7 +1,9 @@
 #include <inttypes.h>
 #include <malloc.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+
 
 struct __attribute__((packed)) bmp_header {
     uint16_t bfType;
@@ -49,7 +51,7 @@ struct image {
 };
 
 struct kernel {
-    const size_t height, width;
+    const uint64_t height, width;
     double* kernel;
 };
 
@@ -59,6 +61,6 @@ enum write_status to_bmp(FILE *out, struct image *img);
 
 struct image rotate(const struct image img );
 
-struct image convolution(const struct image img, struct kernel const krn);
+struct image convolution(const struct image img, struct kernel const kernel);
 
 struct image matrix_transformation(const struct image img, struct kernel kernel);

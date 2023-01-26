@@ -1,6 +1,7 @@
 #include "source.h"
 #include "transformation.h"
 #include "wedebug.h"
+#include "math_work.h"
 
 // ---- READING AND WRITING FILES
 enum read_status from_bmp(FILE *in, struct image *img) {
@@ -155,6 +156,51 @@ struct image convolution(const struct image img, struct kernel const kernel) {
     };
 }
 
+struct image matrix_transformation(const struct image img, struct kernel kernel) {
+    struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
+    struct kernel inverse_kernel = get_inverse_kernel(kernel);
+
+    // Find new w, h via rectangle vertices
+    uint64_t result_width;
+    uint64_t result_height;
+
+
+    return (struct image) {
+            .width = result_width,
+            .height = result_height,
+            .data = result
+    };
+}
+
+// ---- WORK WITH MATRIX ----
+
+int64_t get_max(int num, ...) {
+    int64_t max = INT64_MIN, t;
+    va_list argptr;
+
+    va_start(argptr, num);
+    for(; num; num--) {
+        t = va_arg(argptr, int64_t);
+        max = t > max ? t : max;
+    }
+
+    va_end(argptr);
+    return max;
+}
+
+int64_t get_min(int num, ...) {
+    int64_t min = INT64_MAX, t;
+    va_list argptr;
+
+    va_start(argptr, num);
+    for(; num; num--) {
+        t = va_arg(argptr, int64_t);
+        min = t < min ? t : min;
+    }
+
+    va_end(argptr);
+    return min;
+}
 
 double get_determine(struct kernel kernel) {
     if (kernel.width != 2 || kernel.height != 2) return 0;
@@ -166,6 +212,10 @@ struct kernel get_inverse_kernel(struct kernel kernel) {
         return (struct kernel) { 0 };
 
     double det = get_determine(kernel);
+
+    if (det == 0)
+        return (struct kernel) { 0 };
+
     return (struct kernel) {
             .height = 2,
             .width = 2,
@@ -174,32 +224,28 @@ struct kernel get_inverse_kernel(struct kernel kernel) {
     };
 }
 
-struct point {
-    uint64_t x, y;
-    int valuable;
-};
-
-struct point multiply_kernel_on_xy(struct kernel kernel, uint64_t x, uint64_t y) {
+struct point multiply_kernel_on_xy(struct kernel kernel, int64_t x, int64_t y) {
     if (kernel.width != 2 || kernel.height != 2)
         return (struct point) { 0 };
 
     return (struct point) {
-        .x = kernel.kernel[0] * x + kernel.kernel[1] * y,
-        .y = kernel.kernel[2] * x + kernel.kernel[3] * y,
-        .valuable = 1
+            .x = kernel.kernel[0] * x + kernel.kernel[1] * y,
+            .y = kernel.kernel[2] * x + kernel.kernel[3] * y,
+            .valuable = 1
     };
 }
 
-struct image matrix_transformation(const struct image img, struct kernel kernel) {
-    struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
-    struct kernel inverse_kernel = get_inverse_kernel(kernel);
+struct borders get_borders(struct kernel kernel, int64_t width, int64_t height) {
+    struct point point0  = multiply_kernel_on_xy(kernel, 0, 0);
+    struct point point1  = multiply_kernel_on_xy(kernel, width, 0);
+    struct point point2  = multiply_kernel_on_xy(kernel, width, height);
+    struct point point3  = multiply_kernel_on_xy(kernel, 0, height);
 
-
-
-    return (struct image) {
-            .width = img.width,
-            .height = img.height,
-            .data = result
+    return (struct borders) {
+            .w_left = get_min(4, point0.x, point1.x, point2.x, point3.x),
+            .w_right = get_max(4, point0.x, point1.x, point2.x, point3.x),
+            .h_upper = get_max(4, point0.y, point1.y, point2.y, point3.y),
+            .h_bottom = get_min(4, point0.y, point1.y, point2.y, point3.y)
     };
 }
 
