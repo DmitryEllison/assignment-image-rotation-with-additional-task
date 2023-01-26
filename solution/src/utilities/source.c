@@ -155,6 +155,54 @@ struct image convolution(const struct image img, struct kernel const kernel) {
     };
 }
 
+
+double get_determine(struct kernel kernel) {
+    if (kernel.width != 2 || kernel.height != 2) return 0;
+    return kernel.kernel[0] * kernel.kernel[3] - kernel.kernel[1] * kernel.kernel[2];
+}
+
+struct kernel get_inverse_kernel(struct kernel kernel) {
+    if (kernel.width != 2 || kernel.height != 2)
+        return (struct kernel) { 0 };
+
+    double det = get_determine(kernel);
+    return (struct kernel) {
+            .height = 2,
+            .width = 2,
+            .kernel = (double[]){ (double) kernel.kernel[3] / det, (double) kernel.kernel[2] / (-det),
+                                  (double) kernel.kernel[1] / (-det), (double) kernel.kernel[0] / det}
+    };
+}
+
+struct point {
+    uint64_t x, y;
+    int valuable;
+};
+
+struct point multiply_kernel_on_xy(struct kernel kernel, uint64_t x, uint64_t y) {
+    if (kernel.width != 2 || kernel.height != 2)
+        return (struct point) { 0 };
+
+    return (struct point) {
+        .x = kernel.kernel[0] * x + kernel.kernel[1] * y,
+        .y = kernel.kernel[2] * x + kernel.kernel[3] * y,
+        .valuable = 1
+    };
+}
+
+struct image matrix_transformation(const struct image img, struct kernel kernel) {
+    struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
+    struct kernel inverse_kernel = get_inverse_kernel(kernel);
+
+
+
+    return (struct image) {
+            .width = img.width,
+            .height = img.height,
+            .data = result
+    };
+}
+
 // ---- SHOW DETAILS ----
 
 const char* write_out[3] = {"File has been written well.\n",

@@ -60,3 +60,5 @@ enum write_status to_bmp(FILE *out, struct image *img);
 struct image rotate(const struct image img );
 
 struct image convolution(const struct image img, struct kernel const krn);
+
+struct image matrix_transformation(const struct image img, struct kernel kernel);
