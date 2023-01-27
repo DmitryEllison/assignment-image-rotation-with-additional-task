@@ -2,9 +2,6 @@
 #include <malloc.h>
 #include <math.h>
 #include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
-// actually this looks ugly but . . .
 
 struct point {
     int64_t x, y;
@@ -28,5 +25,3 @@ int64_t get_max(int num, ...);
 int64_t get_min(int num, ...);
 
 void show_matrix(const struct kernel kernel);
-
-double* get_inverse_matrix();
