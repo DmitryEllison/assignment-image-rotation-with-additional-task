@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <malloc.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>

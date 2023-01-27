@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES
-
 #include "utilities/math_work.h"
 #include "utilities/source.h"
 #include "utilities/transformation.h"
