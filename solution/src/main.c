@@ -66,7 +66,14 @@ int main( int argc, char** argv ) {
                                   1., 0}
     };
 
-    img = matrix_transformation(img, kernel2);
+    struct kernel kernel45 = {
+            .height = 2,
+            .width = 2,
+            .kernel = (double[]){ 0.7071, -0.7071,
+                                  0.7071, 0.7071}
+    };
+
+    img = matrix_transformation(img, kernel45);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)

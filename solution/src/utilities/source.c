@@ -188,7 +188,7 @@ struct image matrix_transformation(const struct image img, struct kernel kernel)
                     .r = 255
                 };
             } else {
-                temp = img.data[array_index(old_xy.y, old_xy.x, width) ];
+                temp = img.data[array_index(old_xy.y, old_xy.x, img.width) ];
             }
             int64_t real_x = x - border.w_left;
             int64_t real_y = y - border.h_bottom;
@@ -205,8 +205,8 @@ struct image matrix_transformation(const struct image img, struct kernel kernel)
             .height = height,
             .data = result
     };
-    show_image(stdout, &img);
-    show_image(stdout, &result_image);
+    //show_image(stdout, &img);
+    //show_image(stdout, &result_image);
     return result_image;
 }
 
