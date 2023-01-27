@@ -29,7 +29,7 @@ int main( int argc, char** argv ) {
     // TODO: -----------------------------------------------------------------------------------------------------------
     //  1. rotate the image by 0.5 * \pi
 
-    img = rotate(img);
+    //img = rotate(img);
 
     // TODO: -----------------------------------------------------------------------------------------------------------
     //  2. blur the image by 3x3 and 5x5 kernel
@@ -65,7 +65,7 @@ int main( int argc, char** argv ) {
                                   1, 0}
     };
 
-    //img = matrix_transformation(img, kernel2);
+    img = matrix_transformation(img, kernel2);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)

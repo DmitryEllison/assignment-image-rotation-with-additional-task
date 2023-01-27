@@ -157,17 +157,40 @@ struct image convolution(const struct image img, struct kernel const kernel) {
 }
 
 struct image matrix_transformation(const struct image img, struct kernel kernel) {
-    struct pixel* result = malloc(sizeof(struct pixel) * img.width * img.height);
     struct kernel inverse_kernel = get_inverse_kernel(kernel);
 
     // Find new w, h via rectangle vertices
-    uint64_t result_width;
-    uint64_t result_height;
+    struct borders border = get_borders(inverse_kernel, img.width, img.height);
+    uint64_t width = border.w_right - border.w_left;
+    uint64_t height = border.h_upper - border.h_bottom;
 
+    struct pixel* result = malloc(sizeof(struct pixel) * width * height);
+
+    uint64_t index = 0;
+    struct pixel temp;
+    for (int64_t y = border.h_bottom; y < border.h_upper; ++y) {
+        for(int64_t x = border.w_left; x < border.w_right; ++x) {
+            struct point old_xy = multiply_kernel_on_xy(inverse_kernel, x, y);
+
+            if (old_xy.x < 0 || old_xy.x >= img.width ||
+                old_xy.y < 0 || old_xy.y >= img.height) {
+                temp = (struct pixel) {
+                    .g = 255,
+                    .b = 255,
+                    .r = 255
+                };
+            } else {
+                temp = img.data[array_index(y, x, width) ];
+            }
+
+            result[array_index(y + border.h_bottom, x + border.w_left, width)] = temp;
+
+        }
+    }
 
     return (struct image) {
-            .width = result_width,
-            .height = result_height,
+            .width = width,
+            .height = height,
             .data = result
     };
 }
@@ -244,8 +267,8 @@ struct borders get_borders(struct kernel kernel, int64_t width, int64_t height) 
     return (struct borders) {
             .w_left = get_min(4, point0.x, point1.x, point2.x, point3.x),
             .w_right = get_max(4, point0.x, point1.x, point2.x, point3.x),
-            .h_upper = get_max(4, point0.y, point1.y, point2.y, point3.y),
-            .h_bottom = get_min(4, point0.y, point1.y, point2.y, point3.y)
+            .h_bottom = get_min(4, point0.y, point1.y, point2.y, point3.y),
+            .h_upper = get_max(4, point0.y, point1.y, point2.y, point3.y)
     };
 }
 
