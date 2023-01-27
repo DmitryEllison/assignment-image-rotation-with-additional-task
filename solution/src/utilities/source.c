@@ -158,15 +158,17 @@ struct image convolution(const struct image img, struct kernel const kernel) {
 }
 
 struct image matrix_transformation(const struct image img, struct kernel kernel) {
+
     struct kernel inverse_kernel = get_inverse_kernel(kernel);
     double det = get_determine(kernel);
     inverse_kernel.kernel = (double[]){ (double) kernel.kernel[3] / det, (double) -kernel.kernel[1] / det,
                                         (double) -kernel.kernel[2] / det, (double) kernel.kernel[0] / det };
 
-    show_matrix(inverse_kernel);
+
+    show_matrix(kernel);
 
     // Find new w, h via rectangle vertices
-    struct borders border = get_borders(inverse_kernel, img.width, img.height);
+    struct borders border = get_borders(kernel, img.width, img.height);
     uint64_t width = border.w_right - border.w_left;
     uint64_t height = border.h_upper - border.h_bottom;
 
@@ -186,19 +188,26 @@ struct image matrix_transformation(const struct image img, struct kernel kernel)
                     .r = 255
                 };
             } else {
-                temp = img.data[array_index(y, x, width) ];
+                temp = img.data[array_index(old_xy.y, old_xy.x, width) ];
             }
+            int64_t real_x = x - border.w_left;
+            int64_t real_y = y - border.h_bottom;
 
-            result[array_index(y + border.h_bottom, x + border.w_left, width)] = temp;
+            index = array_index(real_y, real_x, width);
+            result[index] = temp;
 
         }
     }
 
-    return (struct image) {
+
+    struct image result_image = (struct image) {
             .width = width,
             .height = height,
             .data = result
     };
+    show_image(stdout, &img);
+    show_image(stdout, &result_image);
+    return result_image;
 }
 
 // ---- WORK WITH MATRIX ----
@@ -259,7 +268,6 @@ struct point multiply_kernel_on_xy(struct kernel kernel, int64_t x, int64_t y) {
         return (struct point) { 0 };
     }
 
-
     return (struct point) {
             .x = kernel.kernel[0] * x + kernel.kernel[1] * y,
             .y = kernel.kernel[2] * x + kernel.kernel[3] * y,
@@ -316,9 +324,11 @@ void show_matrix(const struct kernel kernel) {
 }
 
 void show_image(FILE* f, struct image const* img) {
+    printf("\n---- IMAGE ----\n");
+    printf("  width: %" PRIu64 "  height:%" PRIu64 " \n", img->width, img->height);
     for (size_t i = 0; i < img->height; ++i) {
         for (size_t j = 0; j < img->width; ++j ) {
-            fprintf(f, "[%d %d %d] ",
+            fprintf(f, "[%3d %3d %3d] ",
                     img->data[j + i * img->width].g,
                     img->data[j + i * img->width].g,
                     img->data[j + i * img->width].g);
