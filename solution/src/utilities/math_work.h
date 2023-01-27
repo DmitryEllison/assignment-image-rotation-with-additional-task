@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <math.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 struct point {
     int64_t x, y;
@@ -11,8 +12,6 @@ struct point {
 struct borders {
     int64_t w_left, w_right, h_upper, h_bottom;
 };
-
-double get_determine(struct kernel kernel);
 
 struct kernel get_inverse_kernel(const struct kernel kernel);
 
