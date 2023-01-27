@@ -1,3 +1,4 @@
+#include <math.h>
 #include "utilities/source.h"
 #include "utilities/transformation.h"
 #include "utilities/wedebug.h"
@@ -66,14 +67,15 @@ int main( int argc, char** argv ) {
                                   1., 0}
     };
 
-    struct kernel kernel45 = {
+    double alpha = M_PI * 39 / 180.;
+    struct kernel kernel_alpha = {
             .height = 2,
             .width = 2,
-            .kernel = (double[]){ 0.7071, -0.7071,
-                                  0.7071, 0.7071}
+            .kernel = (double[]){ cos(alpha), -sin(alpha),
+                                  sin(alpha), cos(alpha)}
     };
 
-    img = matrix_transformation(img, kernel45);
+    img = matrix_transformation(img, kernel_alpha);
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)
