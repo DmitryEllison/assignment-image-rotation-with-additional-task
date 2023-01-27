@@ -1,7 +1,7 @@
+#include "math_work.h"
 #include "source.h"
 #include "transformation.h"
 #include "wedebug.h"
-#include "math_work.h"
 
 // ---- READING AND WRITING FILES
 enum read_status from_bmp(FILE *in, struct image *img) {

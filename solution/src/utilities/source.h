@@ -1,9 +1,3 @@
-#include <inttypes.h>
-#include <malloc.h>
-#include <math.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
 
 
 struct __attribute__((packed)) bmp_header {

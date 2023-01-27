@@ -1,3 +1,11 @@
+#include <inttypes.h>
+#include <malloc.h>
+#include <math.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
+// actually this looks ugly but . . .
+
 struct point {
     int64_t x, y;
     int valuable;
