@@ -67,7 +67,7 @@ int main( int argc, char** argv ) {
                                   1., 0}
     };
 
-    double alpha = M_PI * 39 / 180.;
+    double alpha = M_PI * 90 / 180.;
     struct kernel kernel_alpha = {
             .height = 2,
             .width = 2,
