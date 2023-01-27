@@ -1,5 +1,3 @@
-#include <math.h>
-#include "utilities/math_work.h"
 #include "utilities/source.h"
 #include "utilities/transformation.h"
 #include "utilities/wedebug.h"
