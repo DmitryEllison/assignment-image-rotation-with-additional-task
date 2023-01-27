@@ -3,6 +3,10 @@
 #include "utilities/transformation.h"
 #include "utilities/wedebug.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 
 int main( int argc, char** argv ) {
     (void) argc; (void) argv;
