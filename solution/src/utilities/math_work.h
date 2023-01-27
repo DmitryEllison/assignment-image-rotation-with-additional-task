@@ -9,7 +9,7 @@ struct borders {
 
 double get_determine(struct kernel kernel);
 
-struct kernel get_inverse_kernel(struct kernel kernel);
+struct kernel get_inverse_kernel(const struct kernel kernel);
 
 struct point multiply_kernel_on_xy(struct kernel kernel, int64_t x, int64_t y);
 
@@ -18,3 +18,7 @@ struct borders get_borders(struct kernel kernel, int64_t width, int64_t height);
 int64_t get_max(int num, ...);
 
 int64_t get_min(int num, ...);
+
+void show_matrix(const struct kernel kernel);
+
+double* get_inverse_matrix();

@@ -51,7 +51,7 @@ struct image {
 };
 
 struct kernel {
-    const uint64_t height, width;
+    uint64_t height, width;
     double* kernel;
 };
 

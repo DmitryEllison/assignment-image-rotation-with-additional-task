@@ -1,6 +1,7 @@
 #include "utilities/source.h"
 #include "utilities/transformation.h"
 #include "utilities/wedebug.h"
+#include "utilities/math_work.h"
 
 
 int main( int argc, char** argv ) {
@@ -61,8 +62,8 @@ int main( int argc, char** argv ) {
     struct kernel kernel2 = {
             .height = 2,
             .width = 2,
-            .kernel = (double[]){ 0, -1,
-                                  1, 0}
+            .kernel = (double[]){ 0, -1.,
+                                  1., 0}
     };
 
     img = matrix_transformation(img, kernel2);

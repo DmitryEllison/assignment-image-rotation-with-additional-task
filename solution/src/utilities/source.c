@@ -58,6 +58,7 @@ enum write_status to_bmp(FILE *out, struct image *img) {
                 return WRITE_BUFFER_ERROR;
         }
     }
+    show_header(header);
 
     return WRITE_OK;
 }
@@ -158,6 +159,11 @@ struct image convolution(const struct image img, struct kernel const kernel) {
 
 struct image matrix_transformation(const struct image img, struct kernel kernel) {
     struct kernel inverse_kernel = get_inverse_kernel(kernel);
+    double det = get_determine(kernel);
+    inverse_kernel.kernel = (double[]){ (double) kernel.kernel[3] / det, (double) -kernel.kernel[1] / det,
+                                        (double) -kernel.kernel[2] / det, (double) kernel.kernel[0] / det };
+
+    show_matrix(inverse_kernel);
 
     // Find new w, h via rectangle vertices
     struct borders border = get_borders(inverse_kernel, img.width, img.height);
@@ -226,30 +232,33 @@ int64_t get_min(int num, ...) {
 }
 
 double get_determine(struct kernel kernel) {
-    if (kernel.width != 2 || kernel.height != 2) return 0;
+    if (kernel.width != 2 || kernel.height != 2) {
+        print(stderr, "Determine is ZERO\nError suppressed in get_determine()");
+        return 0;
+    }
     return kernel.kernel[0] * kernel.kernel[3] - kernel.kernel[1] * kernel.kernel[2];
 }
 
-struct kernel get_inverse_kernel(struct kernel kernel) {
-    if (kernel.width != 2 || kernel.height != 2)
-        return (struct kernel) { 0 };
+struct kernel get_inverse_kernel(const struct kernel kernel) {
 
-    double det = get_determine(kernel);
-
-    if (det == 0)
-        return (struct kernel) { 0 };
+    if (kernel.width != 2 || kernel.height != 2){
+        print(stderr, "Kernel has wrong size\nError suppressed in get_inverse_kernel()");
+        return (struct kernel) {0};
+    }
 
     return (struct kernel) {
-            .height = 2,
-            .width = 2,
-            .kernel = (double[]){ (double) kernel.kernel[3] / det, (double) kernel.kernel[2] / (-det),
-                                  (double) kernel.kernel[1] / (-det), (double) kernel.kernel[0] / det}
+        .height = 2,
+        .width = 2,
+        .kernel = NULL
     };
 }
 
 struct point multiply_kernel_on_xy(struct kernel kernel, int64_t x, int64_t y) {
-    if (kernel.width != 2 || kernel.height != 2)
+    if (kernel.width != 2 || kernel.height != 2){
+        print(stderr, "Kernel has wrong size\nError suppressed in multiply_kernel_on_xy()");
         return (struct point) { 0 };
+    }
+
 
     return (struct point) {
             .x = kernel.kernel[0] * x + kernel.kernel[1] * y,
@@ -289,6 +298,21 @@ const char* read_out[4] = {"File has been read well.\n",
 
 void read_status_print(FILE* f, enum read_status rs) {
     fprintf(f,"%s", read_out[(size_t)rs]);
+}
+
+void print(FILE* f, char* str) {
+    fprintf(f,"%s\n", str);
+}
+
+void show_matrix(const struct kernel kernel) {
+    printf("\n---- KERNEL ----\n");
+    printf("  width: %" PRIu64 "  height:%" PRIu64 " \n", kernel.width, kernel.height);
+    for(uint64_t y = 0; y < kernel.height; ++y) {
+        for(uint64_t x = 0; x < kernel.width; ++x) {
+            printf("%10lf", kernel.kernel[array_index(y, x, kernel.width)]);
+        }
+        printf("\n");
+    }
 }
 
 void show_image(FILE* f, struct image const* img) {
