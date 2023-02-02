@@ -284,3 +284,9 @@ bmp-заголовка.
 - Прочитайте [правила хорошего стиля](https://gitlab.se.ifmo.ru/c-language/main/-/wikis/%D0%9F%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-%D1%81%D1%82%D0%B8%D0%BB%D1%8F-%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D1%8F-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC-%D0%BD%D0%B0-C). Ваше решение должно им соответствовать.
 - Архитектура: думайте о том, как бы вы хотели организовать код, чтобы легко добавлять входные форматы (не только BMP) и трансформации (не только поворот на 90 градусов).
 - Пожалуйста, присылайте решение в виде pull-request. [Инструкция](https://gitlab.se.ifmo.ru/cse/main/-/wikis/%D0%9A%D0%B0%D0%BA-%D0%BF%D0%BE%D1%81%D0%BB%D0%B0%D1%82%D1%8C-%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D1%83).
+
+# Результат работы в картиночках
+
+- Поворот картинки на 90 градусов
+  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output2.bmp)
+- 
