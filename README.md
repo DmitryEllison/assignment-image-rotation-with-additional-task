@@ -294,4 +294,4 @@ bmp-заголовка.
 - Блюр картинки по окну 5х5
   ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/img.png)
 - Зеркальное отображение 
-- ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output1.png)
+  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output1.png)
