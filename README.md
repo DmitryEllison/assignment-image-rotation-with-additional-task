@@ -287,6 +287,11 @@ bmp-заголовка.
 
 # Результат работы в картиночках
 
-- Поворот картинки на 90 градусов
-  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output2.bmp)
-- 
+- Поворот картинки на 90 градусов.
+  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output2.png)
+- Поворот на 135 градусов.
+  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output3.png)
+- Блюр картинки по окну 5х5
+  ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/img.png)
+- Зеркальное отображение 
+- ![alt](https://github.com/DmitryEllison/assignment-image-rotation-with-additional-task/blob/master/tester/out_to_show/output1.png)
