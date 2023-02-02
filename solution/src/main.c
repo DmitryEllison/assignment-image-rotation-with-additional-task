@@ -63,14 +63,15 @@ int main( int argc, char** argv ) {
     //  3. rotate the image by \alpha radian
     //  by this method we can change image in any way we want
 
-    struct kernel kernel2 = {
-            .height = 2,
-            .width = 2,
-            .kernel = (double[]){ 0, -1.,
-                                  1., 0}
+    struct kernel kernel_sep = {
+            .height = 3,
+            .width = 3,
+            .kernel = (double[]){ 0.15, 0, -0.15,
+                                  0.15, 0, -0.15,
+                                  0.15, 0, -0.15,}
     };
 
-    double alpha = M_PI * 90 / 180.;
+    double alpha = M_PI * 120 / 180.;
     struct kernel kernel_alpha = {
             .height = 2,
             .width = 2,
@@ -78,7 +79,21 @@ int main( int argc, char** argv ) {
                                   sin(alpha), cos(alpha)}
     };
 
-    img = matrix_transformation(img, kernel_alpha);
+    struct kernel kernel_mirror = {
+            .height = 2,
+            .width = 2,
+            .kernel = (double[]){ -1, 0,
+                                  0, 1}
+    };
+
+    // ---- WORK ----
+
+    img = matrix_transformation(img, kernel_mirror);
+    //free(old_pointer);
+    //old_pointer = img.data;
+    //img = convolution(img, kernel5);
+
+    // ---- END ----
 
     enum write_status ws = to_bmp(out, &img);
     if ((size_t)ws >= 1)
