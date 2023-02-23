@@ -7,7 +7,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-
+/// To change args in Clion you need edit configuration
 int main( int argc, char** argv ) {
     (void) argc; (void) argv;
 
@@ -88,7 +88,7 @@ int main( int argc, char** argv ) {
 
     // ---- WORK ----
 
-    img = matrix_transformation(img, kernel_mirror);
+    img = matrix_transformation(img, kernel_alpha);
     //free(old_pointer);
     //old_pointer = img.data;
     //img = convolution(img, kernel5);
@@ -103,6 +103,7 @@ int main( int argc, char** argv ) {
     } else
         write_status_print(stdout, ws);
 
+    // ---- FREE MEMORY ----
     free(old_pointer);
     free(img.data);
     fclose(in);
