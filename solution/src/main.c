@@ -42,22 +42,22 @@ int main( int argc, char** argv ) {
     struct kernel kernel3 = {
             .height = 3,
             .width = 3,
-            .kernel = (double[]){ 0.11, 0.11, 0.11,
-                                  0.11, 0.11, 0.11,
-                                  0.11, 0.11, 0.11}
+            .kernel = (double[]){ 1./29, 4./29, 1./29,
+                                  4./29, 9./29, 4./29,
+                                  1./29, 4./29, 1./29}
     };
 
     struct kernel kernel5 = {
             .height = 5,
             .width = 5,
-            .kernel = (double[]){ 0.04, 0.04, 0.04, 0.04, 0.04,
-                                  0.04, 0.04, 0.04, 0.04, 0.04,
-                                  0.04, 0.04, 0.04, 0.04, 0.04,
-                                  0.04, 0.04, 0.04, 0.04, 0.04,
-                                  0.04, 0.04, 0.04, 0.04, 0.04 }
+            .kernel = (double[]){ 1./181, 4./181, 9./181, 4./181, 1./181,
+                                  4./181, 9./181, 16./181, 9./181, 4./181,
+                                  9./181, 16./181, 25./181, 16./181, 9./181,
+                                  4./181, 9./181, 16./181, 9./181, 4./181,
+                                  1./181, 4./181, 9./181, 4./181, 1./181}
     };
 
-    //img = convolution(img, kernel5);
+    img = convolution(img, kernel3);
 
     // TODO: -----------------------------------------------------------------------------------------------------------
     //  3. rotate the image by \alpha radian
@@ -71,7 +71,7 @@ int main( int argc, char** argv ) {
                                   0.15, 0, -0.15,}
     };
 
-    double alpha = M_PI * 120 / 180.;
+    double alpha = M_PI  / 2.;
     struct kernel kernel_alpha = {
             .height = 2,
             .width = 2,
@@ -88,7 +88,7 @@ int main( int argc, char** argv ) {
 
     // ---- WORK ----
 
-    img = matrix_transformation(img, kernel_alpha);
+    //img = matrix_transformation(img, kernel_alpha);
     //free(old_pointer);
     //old_pointer = img.data;
     //img = convolution(img, kernel5);
